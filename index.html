@@ -208,8 +208,8 @@ a{color:inherit}
 .eff .chgpair{display:inline-flex;align-items:center;gap:6px;background:var(--ground);border-radius:4px;padding:3px 8px;margin:3px 4px 0 0}
 .eff .chgpair s{color:var(--muted)}
 .eff .chgpair b{font:600 14px/1.3 var(--body);text-transform:none;letter-spacing:0}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.kpis{grid-template-columns:minmax(0,1fr)}}
 .kpi{padding:14px;display:flex;flex-direction:column;gap:4px}
 .kpi .q{font-size:14px;color:var(--muted);min-height:2.6em}
 .kpi .vals{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
@@ -971,8 +971,7 @@ function renderCompare(){
   document.getElementById("kpis").innerHTML=
     kpi("Stops visited at their peak hour",a.peak/A.stops.length,b.peak/B.stops.length,"low",`${a.peak} of ${A.stops.length}`,`${b.peak} of ${B.stops.length}`)+
     kpi("Small local businesses in the day",a.local/A.stops.length,b.local/B.stops.length,"high",`${a.local} of ${A.stops.length}`,`${b.local} of ${B.stops.length}`)+
-    kpi("Average crowd when you arrive (1–5)",a.crowd,b.crowd,"low",a.crowd.toFixed(1),b.crowd.toFixed(1))+
-    kpi("Distance travelled",a.km,b.km,"low",a.km.toFixed(1)+" km",b.km.toFixed(1)+" km");
+    kpi("Average crowd when you arrive (1–5)",a.crowd,b.crowd,"low",a.crowd.toFixed(1),b.crowd.toFixed(1));
   const rush=x=>x===0?"no rush hours":x===1?"1 rush hour":x+" rush hours",loc=x=>x===1?"1 local business":x+" local businesses";
   document.getElementById("verdict").innerHTML=`Same request. The normal app sends you into <b class="${b.peak?"bad":""}">${rush(b.peak)}</b> with <b>${loc(b.local)}</b>. Omweg plans <b class="${a.peak<=b.peak?"good":"bad"}">${rush(a.peak)}</b> and <b class="${a.local>=b.local?"good":""}">${loc(a.local)}</b>.`;
   ["crowd","local"].forEach(k=>{document.getElementById("eff-"+k).innerHTML=state.chg&&state.chg.which===k?switchNote():""});

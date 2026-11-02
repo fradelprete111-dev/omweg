@@ -672,13 +672,12 @@ function renderMap(){
   document.getElementById("map").innerHTML=mapSVG(m,480);
   document.getElementById("mlist").innerHTML=st.map((x,i)=>`<div><span class="blaze${x.p.local?" y":""}" style="width:24px;height:22px;margin:0;font-size:13px"><span>${i+1}</span></span><span>${esc(x.p.name)}</span><a class="btn link" href="https://www.google.com/maps/dir/?api=1&destination=${x.p.lat},${x.p.lng}" target="_blank" rel="noopener">Go ${ICON.go}</a></div>`).join("");
   const a=totals(m.plan),bb=totals(m.base);
-  // your day against a popularity-ranked app; lower is better for rush hours and travel, higher for local businesses
+  // your day against a popularity-ranked app; lower is better for rush hours, higher for local businesses
   const cell=(mine,theirs,better,fmt)=>{const win=better==="low"?mine<theirs:mine>theirs;return `<b class="${win?"win":""}">${fmt(mine)}</b><span>${fmt(theirs)}</span>`};
   document.getElementById("impact").innerHTML=`<span class="label">Your day vs a typical travel app</span>
     <div class="cmpgrid"><i></i><em>Your day</em><em>Typical app</em>
       <span class="k">Stops in a rush hour</span>${cell(a.peak,bb.peak,"low",v=>v)}
-      <span class="k">Local businesses</span>${cell(a.local,bb.local,"high",v=>v)}
-      <span class="k">Travel</span>${cell(a.km,bb.km,"low",v=>v.toFixed(1)+" km")}</div>`;
+      <span class="k">Local businesses</span>${cell(a.local,bb.local,"high",v=>v)}</div>`;
 }
 
 /* ---------- what a switch changed ---------- */
