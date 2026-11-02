@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Omweg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Overpass+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a guided walk down one column, like a marked trail. Five numbered stages, each with one idea; the app lives inside stage 2. Trail-sign red, marker yellow, otherwise quiet. */
+:root{
+  --bg:#F4F5F2; --paper:#FFFFFF; --ground:#EAECE7; --ink:#141614; --muted:#5A605A; --hair:#D6DAD3;
+  --red:#C8102E; --red-ink:#FFFFFF; --yellow:#F2BE00; --yellow-soft:#FDF1C4; --water:#B9D6EE; --water-ink:#2F6A9A;
+  --ok:#1C7A3E; --ok-soft:#D5EEDC; --mid:#9A6200; --mid-soft:#F8E6C4; --bad:#C8102E; --bad-soft:#F8D6DA;
+  --f-price:#C98E12; --f-indoor:#7F4FBF; --f-crowd:#C8102E; --f-dist:#5E6C78; --f-kind:#1C7A3E; --f-mix:#0F7C8C;
+  --display:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+  --body:"Barlow","Segoe UI",system-ui,sans-serif;
+  --mono:"Overpass Mono",ui-monospace,Consolas,monospace;
+}
+/* always dark, whatever the device setting */
+:root,:root[data-theme="light"],:root[data-theme="dark"]{
+  --bg:#121412; --paper:#1A1D1A; --ground:#242824; --ink:#F0F2EE; --muted:#A4ABA3; --hair:#323832;
+  --red:#E8364D; --red-ink:#FFFFFF; --yellow:#F5C928; --yellow-soft:#3B3212; --water:#23435C; --water-ink:#8CBCE3;
+  --ok:#62CB8A; --ok-soft:#1B3524; --mid:#F0BE4A; --mid-soft:#3A2F16; --bad:#FF6B7C; --bad-soft:#40202A;
+  --f-price:#E8B84A; --f-indoor:#B08AE8; --f-crowd:#FF6B7C; --f-dist:#9AA8B4; --f-kind:#62CB8A; --f-mix:#4CC3D2;
+  color-scheme:dark;
+}
+:root[data-theme="dark"]{
+  --bg:#121412; --paper:#1A1D1A; --ground:#242824; --ink:#F0F2EE; --muted:#A4ABA3; --hair:#323832;
+  --red:#E8364D; --red-ink:#FFFFFF; --yellow:#F5C928; --yellow-soft:#3B3212; --water:#23435C; --water-ink:#8CBCE3;
+  --ok:#62CB8A; --ok-soft:#1B3524; --mid:#F0BE4A; --mid-soft:#3A2F16; --bad:#FF6B7C; --bad-soft:#40202A;
+  --f-price:#E8B84A; --f-indoor:#B08AE8; --f-crowd:#FF6B7C; --f-dist:#9AA8B4; --f-kind:#62CB8A; --f-mix:#4CC3D2;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:72px}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05;font-weight:700}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.label{font:700 13px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:19px;color:var(--muted);max-width:62ch}
+.mk{display:inline-block;width:16px;height:12px;flex:none;background:linear-gradient(#fff 0 50%,var(--red) 50% 100%);outline:1.5px solid var(--ink);outline-offset:-1.5px;vertical-align:-1px}
+.mk.y{background:var(--yellow)}
+
+/* ---------- hero ---------- */
+.hero{display:flex;flex-direction:column;gap:14px;position:relative}
+.heroapp{text-decoration:none;color:inherit;display:flex;align-items:flex-end;gap:14px;width:fit-content}
+.ph{display:flex;flex-direction:column;gap:5px;width:178px;padding:22px 9px 12px;background:#0b0c0b;border:7px solid #3a3e3a;border-radius:28px;box-shadow:8px 10px 0 var(--red);transform:rotate(6deg);transition:transform .25s cubic-bezier(.3,1.4,.5,1);position:relative}
+.heroapp:hover .ph{transform:rotate(0) translateY(-4px)}
+.ph-notch{position:absolute;top:6px;left:50%;width:52px;height:9px;margin-left:-26px;border-radius:9px;background:#3a3e3a}
+.ph-bar i{display:inline-block;font:800 14px/1 var(--display);font-style:normal;letter-spacing:.06em;text-transform:uppercase;background:var(--red);color:#fff;padding:4px 14px 3px 7px;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 50%,calc(100% - 7px) 100%,0 100%)}
+.ph-pkg{display:flex;flex-direction:column;gap:1px;border-left:3px solid var(--red);padding:4px 6px;background:#1b1d1b;margin:2px 0}
+.ph-pkg b{font:700 11.5px/1.2 var(--body);color:#f2f2ee}.ph-pkg small{font-size:9.5px;color:#9a9e98}
+.ph-stop{display:flex;gap:6px;align-items:center;font:600 10.5px/1.2 var(--body);color:#f2f2ee;border:1.5px solid #F5C928;border-radius:3px;padding:4px 6px;background:#1b1d1b}
+.ph-stop em{font:800 10px/1 var(--display);font-style:normal;color:#9a9e98}
+.ph-btn{margin-top:3px;text-align:center;font:800 10px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;background:#3D8BFF;color:#fff;padding:6px 4px;border-radius:2px}
+.tryapp{flex-direction:row;align-items:center;gap:4px;margin:0 0 70px -10px;max-width:180px;line-height:1.25}
+.tryapp .ar-up{display:none}
+@media (min-width:1000px){.heroapp{position:absolute;top:30px;right:6px;flex-direction:row-reverse;align-items:flex-start;gap:2px}.tryapp{flex-direction:row-reverse;align-items:flex-end;margin:70px 0 0;max-width:none;white-space:nowrap;text-align:right}.tryapp .ar-left{transform:scaleX(-1);margin-bottom:-6px}.wrap .hero p.what{max-width:calc(100% - 250px)}.wrap .hero .trailmap{max-width:calc(100% - 230px)}}
+@media (prefers-reduced-motion:reduce){.ph{transition:none}}
+.sign{background:var(--red);color:var(--red-ink);clip-path:polygon(0 0,calc(100% - 46px) 0,100% 50%,calc(100% - 46px) 100%,0 100%);padding:12px 76px 4px 24px;width:fit-content;max-width:100%}
+.sign h1{font-size:clamp(68px,12vw,136px);font-weight:800;letter-spacing:.01em;line-height:.88;text-transform:uppercase}
+.sign2{color:var(--red);border:3px solid var(--red);background:var(--paper);clip-path:polygon(0 0,calc(100% - 26px) 0,100% 50%,calc(100% - 26px) 100%,0 100%);padding:6px 46px 6px 16px;width:fit-content;max-width:100%;font:700 clamp(19px,2.6vw,27px)/1.1 var(--display);text-transform:uppercase;letter-spacing:.03em}
+.hero .what{font-size:clamp(21px,2.4vw,26px);line-height:1.35;max-width:34em;margin-top:10px}
+.hero .what b{color:var(--red)}
+.team{font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 16px;border-top:1px solid var(--hair);padding-top:12px;margin-top:6px}
+.team b{color:var(--ink);font-weight:600}
+.trailmap{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 0;font:700 15px var(--display);letter-spacing:.05em;text-transform:uppercase}
+.trailmap a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);padding:4px 12px 4px 0}
+.trailmap a:hover{color:var(--red)}
+.trailmap .tm-app{color:var(--red);gap:6px}
+.trailmap li+li a::before{content:"";width:22px;height:3px;background:repeating-linear-gradient(90deg,var(--red) 0 6px,transparent 6px 10px);margin-right:4px}
+
+/* ---------- stages ---------- */
+.stage{display:flex;flex-direction:column;gap:22px;scroll-margin-top:16px}
+.stage-h{display:flex;flex-direction:column;gap:10px}
+.post{display:flex;align-items:center;gap:12px}
+.post .n{background:var(--red);color:var(--red-ink);font:800 15px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;padding:6px 22px 5px 10px;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,0 100%)}
+.stage-h h2{font-size:clamp(34px,4.6vw,50px);letter-spacing:-.005em}
+.box{background:var(--paper);border:1px solid var(--hair);border-radius:4px}
+
+/* stage 1: facts */
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.facts{grid-template-columns:minmax(0,1fr)}}
+.fact{padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px}
+.fact .big{font:800 46px/1 var(--display);color:var(--red)}
+.fact p{font-size:15.5px}
+.fact small{font-size:12.5px;color:var(--muted)}
+
+/* stage 2: try it */
+.askbox{padding:18px;display:flex;flex-direction:column;gap:14px}
+.askrow{display:flex;gap:10px;flex-wrap:wrap}
+.askrow input{flex:1 1 320px;min-width:0;font:18px var(--body);color:var(--ink);background:var(--bg);border:2px solid var(--ink);border-radius:3px;padding:12px 14px}
+.go{flex:none;font:800 19px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--red);color:var(--red-ink);border:0;padding:14px 40px 14px 18px;cursor:pointer;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
+.go:hover{filter:brightness(1.08)}
+.examples{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ex{font:500 14.5px var(--body);background:var(--ground);border:1px solid transparent;color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer;text-align:left}
+.ex:hover{border-color:var(--ink)}
+.ex[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.heard{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14.5px;color:var(--muted);border-top:1px solid var(--hair);padding-top:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:600 14px var(--body);background:var(--ground);color:var(--ink);border:0;border-radius:3px;padding:4px 5px 4px 10px;cursor:pointer}
+.chip .x{display:grid;place-items:center;width:18px;height:18px;background:var(--paper);color:var(--muted);font-size:12px;border-radius:2px}
+.chip:hover .x{color:var(--red)}
+.dayout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.dayout{grid-template-columns:minmax(0,1fr)}}
+.pkg{padding:16px 18px;display:flex;flex-direction:column;gap:6px;border-left:6px solid var(--red)}
+.pkg h3{font-size:32px;text-transform:uppercase;letter-spacing:.01em}
+.pkg p{color:var(--muted);font-size:15px}
+.sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--hair);margin-top:8px;padding-top:10px;gap:8px}
+.sum div{display:flex;flex-direction:column}
+.sum b{font:800 24px/1.1 var(--display)}
+.sum span{font-size:12.5px;color:var(--muted)}
+.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.stop{display:grid;grid-template-columns:62px 28px minmax(0,1fr);column-gap:12px}
+.time{font:800 21px/1 var(--display);text-align:right;padding-top:14px}
+.time small{display:block;font:600 12.5px var(--body);color:var(--muted);margin-top:4px}
+.rail{position:relative;display:flex;justify-content:center}
+.rail::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:4px;transform:translateX(-50%);background:repeating-linear-gradient(var(--red) 0 10px,transparent 10px 15px)}
+.stop.first .rail::before{top:16px}
+.stop.last .rail::before{bottom:calc(100% - 20px)}
+.blaze{position:relative;z-index:1;width:26px;height:24px;margin-top:12px;display:grid;place-items:center;font:800 14px var(--display);background:linear-gradient(#fff 0 50%,var(--red) 50% 100%);outline:2px solid #141614;outline-offset:-2px;color:#141614}
+.blaze span{background:#fff;padding:0 3px;line-height:1.1}
+.blaze.y{background:var(--yellow)}.blaze.y span{background:transparent}
+.card{margin:6px 0;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.card.local{border-color:var(--yellow);box-shadow:inset 0 0 0 1px var(--yellow)}
+.card h4{font-size:23px;letter-spacing:.005em}
+.card .sub{font-size:14px;color:var(--muted)}
+.reason{font-size:15px;display:flex;gap:9px;align-items:baseline}
+.blazemark{flex:none;align-self:center;width:14px;height:6px;border-radius:1px;background:currentColor;box-shadow:0 -3px 0 #fff}
+.ok{color:var(--ok)}.near{color:var(--mid)}.off{color:var(--bad)}
+.more{display:none;flex-direction:column;gap:8px;border-top:1px solid var(--hair);padding-top:8px}
+.card.open .more{display:flex}
+.why{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.why li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:6px;align-items:baseline}
+.why b{text-align:center}
+.tip{font-size:13.5px;color:var(--muted);border-left:3px solid var(--yellow);padding-left:9px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.btn{font:700 14px var(--display);letter-spacing:.06em;text-transform:uppercase;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);padding:4px 11px;cursor:pointer;text-decoration:none;white-space:nowrap;border-radius:2px}
+.btn:hover{background:var(--ink);color:var(--bg)}
+.leg{grid-column:3;font-size:13px;color:var(--muted);font-style:italic;padding:2px 0}
+.alts{display:flex;flex-direction:column;gap:10px;padding-top:6px}
+.alt{font:700 15px var(--display);letter-spacing:.04em;text-transform:uppercase;background:var(--paper);border:1.5px solid var(--ink);padding:5px 11px;cursor:pointer;color:var(--ink);border-radius:2px}
+.alt:hover{background:var(--ink);color:var(--bg)}
+.side{display:flex;flex-direction:column;gap:12px;position:sticky;top:16px}
+@media (max-width:860px){.side{position:static}}
+.mapbox{padding:10px}
+.mapbox svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;flex:none;display:inline-block;border-radius:2px}
+
+/* stage 3: compare */
+.cmp{padding:18px;display:flex;flex-direction:column;gap:16px}
+.axis{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px}
+.axis .ticks{position:relative;height:18px;font:600 12px var(--body);color:var(--muted)}
+.axis .ticks span{position:absolute;transform:translateX(-50%)}
+.lane{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:center}
+@media (max-width:620px){.lane,.axis{grid-template-columns:minmax(0,1fr)}.axis>div:first-child{display:none}.lane .who{margin-top:6px}}
+.lane .who small{display:block;font:500 12.5px/1.25 var(--body);text-transform:none;letter-spacing:0;color:var(--muted);margin-top:3px}
+.lane .who{font:800 17px/1.1 var(--display);text-transform:uppercase;letter-spacing:.03em;display:flex;align-items:center;gap:8px}
+.track{position:relative;height:76px;background:repeating-linear-gradient(90deg,var(--hair) 0 1px,transparent 1px 100%);background-size:var(--hour) 100%;border-bottom:1px solid var(--hair)}
+.blk{position:absolute;top:6px;bottom:6px;border-radius:3px;padding:4px 6px;font-size:12.5px;line-height:1.2;overflow:hidden;display:flex;flex-direction:column;justify-content:center;border:1.5px solid transparent;min-width:0}
+.blk b{font:800 14px var(--display)}
+.blk span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blk em{font:700 10.5px/1.2 var(--display);font-style:normal;letter-spacing:.08em;text-transform:uppercase;opacity:.9;white-space:nowrap;overflow:hidden}
+.blk.c1 em{color:var(--ok)}.blk.c2 em{color:var(--mid)}.blk.c3 em{color:var(--bad)}
+.blk.c1{background:var(--ok-soft);border-color:var(--ok)}
+.blk.c2{background:var(--mid-soft);border-color:var(--mid)}
+.blk.c3{background:var(--bad-soft);border-color:var(--bad)}
+.blk.local{box-shadow:inset 0 -5px 0 var(--yellow);padding-bottom:9px}
+.blk.chg{outline:3px solid var(--yellow);outline-offset:2px;animation:chgflash .5s ease-in-out 3}
+.card.chg{outline:2px dashed var(--ink);outline-offset:2px}
+.chartcap{margin:4px 0 -6px;font-size:14.5px;color:var(--muted)}.chartcap b{color:var(--ink)}
+.verdict{margin:0;font:500 clamp(19px,2.3vw,25px)/1.4 var(--body);max-width:60ch}
+.verdict b{font-weight:700}.verdict .good{color:var(--ok)}.verdict .bad{color:var(--bad)}
+.ctrl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.ctrl-l{font:800 14px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tryme{display:inline-flex;align-items:center;gap:6px;font:italic 600 15px/1 var(--body);color:var(--yellow);transform:rotate(-2deg);margin-left:4px}
+.tryme svg{flex:none}
+.tryup{text-decoration:none;margin:2px 0 0 8px;align-items:flex-end}.tryup:hover{text-decoration:underline}
+.stage-h .lead a{color:var(--ink)}
+.tpill{position:relative;display:inline-flex;align-items:center;gap:10px;background:var(--yellow);color:#141614;border:2px solid #141614;border-radius:999px;padding:4px 16px 4px 4px;box-shadow:3px 3px 0 #000;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,background .2s}
+.tpill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000}
+.tpill input{position:absolute;opacity:0;width:1px;height:1px}
+.tpill b{font:800 15px/1 var(--display);letter-spacing:.05em;text-transform:uppercase}
+.tpill .sw-track{flex:none;width:46px;height:26px;border-radius:999px;background:#141614;position:relative}
+.tpill .knob{position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .3s cubic-bezier(.3,1.4,.5,1)}
+.knob svg{width:100%;height:100%;display:block;fill:#141614;stroke:#141614;stroke-width:2.6;stroke-linecap:round}
+.knob path{fill:none}
+.tpill input:checked+.sw-track .knob{transform:translateX(20px)}
+.tpill input:checked+.sw-track .frown,.tpill input:not(:checked)+.sw-track .smile{display:none}
+.tpill:has(input:not(:checked)){background:var(--ground);color:var(--muted);border-color:var(--hair);box-shadow:none}
+.tpill:has(input:not(:checked)) .sw-track{background:var(--hair)}
+.tpill:has(input:focus-visible){outline:3px solid var(--ink);outline-offset:3px}
+.effs{display:flex;flex-direction:column;gap:4px;margin:-4px 0 -6px}
+.effs .eff{display:block;font:italic 600 15.5px/1.45 var(--body);color:var(--yellow);margin:0;padding-left:34px;position:relative;transform:rotate(-.6deg)}
+.effs .eff b{font-weight:800}
+.effs .eff:not(:empty)::before{content:"";position:absolute;left:0;top:0;width:26px;height:30px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 30' fill='none' stroke='%23F5C928' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 3c10 0 16 8 14 24'/%3E%3Cpath d='M13 22l5 6 5-6'/%3E%3C/svg%3E") no-repeat}.effs:has(.eff:empty+.eff:empty){display:none}
+@keyframes chgflash{0%,100%{outline-color:var(--yellow)}50%{outline-color:transparent}}
+@media (prefers-reduced-motion:reduce){.tpill,.tpill .knob{transition:none}}
+.eff{font-size:14px;line-height:1.4;margin-top:4px}
+.eff:empty{display:none}
+.eff .chgpair{display:inline-flex;align-items:center;gap:6px;background:var(--ground);border-radius:4px;padding:3px 8px;margin:3px 4px 0 0}
+.eff .chgpair s{color:var(--muted)}
+.eff .chgpair b{font:600 14px/1.3 var(--body);text-transform:none;letter-spacing:0}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{padding:14px;display:flex;flex-direction:column;gap:4px}
+.kpi .q{font-size:14px;color:var(--muted);min-height:2.6em}
+.kpi .vals{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.kpi .o{font:800 36px/1 var(--display)}
+.kpi .o.good{color:var(--ok)}.kpi .o.bad{color:var(--bad)}
+.kpi .b{font:600 16px var(--display);color:var(--muted)}
+.kpi .d{font:700 13px var(--display);letter-spacing:.08em;text-transform:uppercase}
+.d.good{color:var(--ok)}.d.bad{color:var(--bad)}.d.same{color:var(--muted)}
+
+/* stage 4: how */
+.steps{display:flex;flex-direction:column;gap:16px}
+.step{padding:18px;display:grid;grid-template-columns:54px minmax(0,1fr);gap:4px 16px}
+.step .k{grid-row:span 3;font:800 46px/1 var(--display);color:var(--red)}
+.step h3{font-size:27px}
+.step .plain{font-size:16px;max-width:66ch}
+.step:has(.postit){grid-template-columns:54px minmax(0,1fr) 250px}
+.step:has(.postit) .vis{grid-column:2}
+.postit{grid-column:3;grid-row:1/4;align-self:start;display:flex;flex-direction:column;gap:4px;background:var(--yellow);color:#141614;padding:12px 14px 14px;transform:rotate(1.8deg);box-shadow:4px 4px 0 #000;border:2px solid #141614;font:500 14px/1.35 var(--body)}
+.postit b{font:800 13px/1 var(--display);letter-spacing:.1em;text-transform:uppercase}
+@media (max-width:760px){.step:has(.postit){grid-template-columns:54px minmax(0,1fr)}.postit{grid-column:2;grid-row:auto;transform:rotate(-1deg);margin:6px 0}.step:has(.postit) .vis{grid-column:2}}
+.vis{grid-column:2;margin-top:10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.chat{display:flex;flex-direction:column;align-items:flex-start;gap:5px;max-width:560px}
+.chat-who{font:700 12px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.bubble{display:block;background:#3D8BFF;color:#fff;text-decoration:none;font:500 17px/1.4 var(--body);padding:11px 16px;border-radius:20px 20px 20px 4px;max-width:100%;transition:transform .15s ease}
+.bubble:hover{transform:translateY(-2px)}
+.chat-edit{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;color:var(--muted);text-decoration:none}
+.chat-edit:hover{color:var(--ink)}
+.reads{font:700 12px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.flow .from{font-style:italic;font-size:16px;background:var(--ground);padding:8px 12px;border-radius:3px;max-width:100%}
+.flow .arr{font:800 22px var(--display);color:var(--red)}
+.pairs{display:flex;flex-wrap:wrap;gap:6px}
+.pair{font-size:14px;background:var(--paper);border:1px solid var(--hair);border-radius:3px;padding:4px 9px;display:flex;gap:8px;align-items:center}
+.pair i{font-style:normal;color:var(--muted)}
+.pair b{font-family:var(--mono);font-size:13px}
+.bars{display:flex;flex-direction:column;gap:5px}
+.bar{display:grid;grid-template-columns:minmax(150px,240px) minmax(0,1fr) 54px;gap:10px;align-items:center;font-size:14.5px}
+.bar .tr{height:14px;background:var(--ground);border-radius:2px;overflow:hidden;display:flex}
+.bar .tr i{display:block;height:100%}
+.bar .v{font-family:var(--mono);font-size:12.5px;color:var(--muted);text-align:right}
+.bar.pick{font-weight:700}
+.bar.pick .nm::after{content:" · chosen";color:var(--red);font:700 12px var(--display);letter-spacing:.08em;text-transform:uppercase}
+@media (max-width:560px){.bar{grid-template-columns:minmax(0,1fr) 90px 46px}}
+.stopsel{display:flex;flex-wrap:wrap;gap:6px}
+.stopsel button{font:700 14px var(--display);letter-spacing:.04em;text-transform:uppercase;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);padding:4px 10px;cursor:pointer;border-radius:2px;display:inline-flex;align-items:center;gap:7px}
+.stopsel button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+details{border-top:1px solid var(--hair);padding-top:8px}
+summary{cursor:pointer;font:700 14px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--red);width:fit-content}
+details[open] summary{margin-bottom:10px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font:700 12px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:5px 8px;border-bottom:1.5px solid var(--ink);white-space:nowrap}
+td{padding:5px 8px;border-bottom:1px solid var(--hair)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.pick td{background:var(--ground);font-weight:600}
+.note{font-size:13.5px;color:var(--muted)}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:2px}
+.seg button{font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;border:0;background:var(--paper);color:var(--ink);padding:4px 10px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* stage 5 */
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.rp{padding:16px;display:flex;flex-direction:column;gap:6px}
+.rp .label{color:var(--red)}
+.rp h3{font-size:22px}
+.rp p{font-size:14.5px;color:var(--muted)}
+.lim3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+@media (max-width:760px){.lim3{grid-template-columns:minmax(0,1fr)}}
+.lim{padding:16px 18px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.lim .label{color:var(--red)}.lim p{margin:0}
+.lim .next{margin-top:4px;padding-top:8px;border-top:1px dashed var(--hair);font-size:14px;color:var(--muted)}
+.lim .next b{display:block;font:800 12px/1.2 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.lim-ai{grid-column:auto;grid-row:auto;transform:rotate(-1.2deg)}.lim-ai .next{border-top-color:rgba(0,0,0,.3);color:#141614}.lim-ai .next b{color:#141614}
+.go-s{font:800 17px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--red);color:var(--red-ink);padding:9px 30px 9px 12px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%);white-space:nowrap}
+.yourturn{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.yourturn label{font:800 15px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+.h-row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 20px}
+.applink{display:inline-flex;align-items:center;gap:6px;font:800 15px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--red);text-decoration:none;border-bottom:2px solid currentColor;padding-bottom:3px;white-space:nowrap}
+.applink:hover{color:var(--ink)}
+.pkg-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px}
+.pkg-top h3{display:flex;align-items:center;gap:10px}.pkg-top .ti{width:24px;height:24px;color:var(--red);flex:none}
+.match{font:700 12px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1.5px solid var(--hair);border-radius:999px;padding:6px 10px 5px;white-space:nowrap}
+.altrow{display:flex;flex-wrap:wrap;gap:10px}
+.pkgalt{display:inline-flex;align-items:center;gap:10px;font-size:16px;padding:10px 14px;border-width:2px;border-radius:6px}
+.pkgalt .ti{color:var(--red)}.pkgalt:hover .ti{color:inherit}
+.exhint{font-size:13.5px;color:var(--muted);font-style:italic}
+.sticker{align-self:flex-start;display:inline-flex;flex-direction:column;gap:2px;text-decoration:none;background:var(--yellow);color:#141614;border:2px solid #141614;padding:8px 14px 9px;transform:rotate(-1.6deg);box-shadow:4px 4px 0 #000;margin:4px 0 6px 2px;max-width:100%}
+.sticker b{font:800 18px/1.05 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.sticker span{font:600 14px/1.25 var(--body)}
+.sticker:hover{transform:rotate(0deg)}
+@media (prefers-reduced-motion:no-preference){.sticker{transition:transform .15s ease}}
+.acts{justify-content:space-between}
+.minor{display:inline-flex;align-items:center;gap:4px;margin-left:auto}
+.lnk{background:none;border:0;padding:4px 6px;font:600 13.5px var(--body);color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:5px;border-radius:2px}
+.lnk:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.thin{border:1.5px solid #FF8A3D;background:color-mix(in srgb,#FF8A3D 12%,transparent);border-radius:3px;padding:9px 12px;font-size:14px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.dayend{display:flex;flex-direction:column;gap:14px;border:2px solid var(--ok);border-radius:8px;padding:16px 18px;background:color-mix(in srgb,var(--ok) 9%,var(--paper))}
+.de-head{display:flex;align-items:center;gap:14px}
+.de-head p{margin:2px 0 0;font-size:14.5px;color:var(--muted)}
+.dayend h3,.dayend h4{margin:0;font:800 24px/1.1 var(--display);text-transform:uppercase;letter-spacing:.04em}
+.de-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.de-stats div{background:var(--paper);border:1px solid var(--hair);border-radius:6px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.de-stats b{font:800 30px/1 var(--display);color:var(--ok)}
+.de-stats span{font-size:13px;line-height:1.3;color:var(--muted)}
+.de-again{align-self:flex-start}
+.seal{width:58px;height:52px;display:grid;place-items:center;font:800 28px/1 var(--display);color:#141614;background:linear-gradient(#fff 0 50%,var(--ok) 50% 100%);outline:3px solid #141614;outline-offset:-3px;transform:rotate(-4deg)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+#device .confetti{position:absolute}
+.confetti i{position:absolute;top:-24px;width:14px;height:10px;outline:1.5px solid #141614;outline-offset:-1.5px}
+@media (prefers-reduced-motion:no-preference){
+  .dayend.fresh-end .seal{animation:stamp .55s cubic-bezier(.2,1.6,.4,1) both}
+  .dayend.fresh-end .de-stats div{animation:rise .35s ease-out both}
+  .dayend.fresh-end .de-stats div:nth-child(2){animation-delay:.08s}.dayend.fresh-end .de-stats div:nth-child(3){animation-delay:.16s}
+  @keyframes stamp{from{transform:scale(1.8) rotate(-14deg);opacity:0}to{transform:scale(1) rotate(-4deg);opacity:1}}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .confetti i{animation:fall var(--dur) cubic-bezier(.25,.6,.4,1) var(--delay) forwards}
+  @keyframes fall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx),780px) rotate(var(--rot));opacity:0}}
+}
+@media (prefers-reduced-motion:reduce){.confetti{display:none}}
+.card{position:relative}
+.donemark{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:var(--ok);color:#0b1a10;display:grid;place-items:center;font:800 17px/1 var(--body)}
+.ico{display:inline-block;vertical-align:-2px;flex:none}
+.lpill{display:inline-block;vertical-align:3px;margin-left:8px;font:800 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;background:var(--yellow);color:#141614;padding:4px 7px 3px;border-radius:3px}
+.swapbtn{position:absolute;top:10px;right:10px;display:inline-flex;align-items:center;gap:6px;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--paper);color:var(--ink);border:1.5px solid var(--hair);border-radius:3px;padding:4px 9px;cursor:pointer}
+.swapbtn:hover{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.swapbtn .ic{font-size:15px;line-height:1}
+.card h3,.card h4{padding-right:96px}
+.btn.route{background:transparent;border-color:var(--red);color:var(--red);display:inline-flex;align-items:center;gap:6px}
+.btn.route.first{border-color:#3D8BFF;color:#3D8BFF}
+.btn.route.first:hover,.btn.route.first.next{background:#3D8BFF;border-color:#3D8BFF;color:#fff}
+.btn.route.first.next{box-shadow:0 0 0 3px color-mix(in srgb,#3D8BFF 35%,transparent);animation:none}
+.btn.route.last{border-color:#A77BFF;color:#A77BFF}
+.btn.route.last:hover,.btn.route.last.next{background:#A77BFF;border-color:#A77BFF;color:#fff}
+.btn.route.last.next{box-shadow:0 0 0 3px color-mix(in srgb,#A77BFF 35%,transparent);animation:none}
+.btn.route:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.route.next{background:var(--red);color:#fff;font-size:15.5px;padding:7px 16px;box-shadow:0 0 0 3px color-mix(in srgb,var(--red) 35%,transparent)}
+.here{flex:none;display:inline-flex;align-items:center;gap:7px;font:800 15px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--ok);color:#0b1a10;border:0;border-radius:999px;padding:9px 16px;cursor:pointer;transition:transform .15s}
+.here:hover{transform:translateY(-1px)}
+.onway{display:inline-flex;align-items:center;gap:8px;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;color:#FF8A3D}
+.pulse{flex:none;width:9px;height:9px;border-radius:50%;background:#FF8A3D}
+@media (prefers-reduced-motion:no-preference){.pulse{animation:pulse 1.8s ease-out infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,138,61,.55)}70%{box-shadow:0 0 0 8px rgba(255,138,61,0)}100%{box-shadow:0 0 0 0 rgba(255,138,61,0)}}}
+.again{font-size:13px;color:var(--muted);text-underline-offset:3px}
+.again:hover{color:var(--ink)}
+.visited{font:700 13px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ok)}
+.card.t-go{border-color:#FF8A3D;box-shadow:inset 0 0 0 1px #FF8A3D}
+.card.t-done{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+.card.t-done h3,.card.t-done h4{color:var(--muted)}
+.blaze.t-go{background:#FF8A3D!important}.blaze.t-done{background:var(--ok)!important}
+.blaze.t-go span,.blaze.t-done span{background:transparent}
+.progress{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:14px;color:var(--muted)}
+.progress b{color:var(--ink)}
+.progress button{font:700 12.5px var(--display);letter-spacing:.06em;text-transform:uppercase;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0}
+@media (prefers-reduced-motion:no-preference){.btn.route.next{animation:nudge 2.4s ease-in-out infinite}@keyframes nudge{0%,100%{box-shadow:0 0 0 3px color-mix(in srgb,var(--red) 35%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--red) 15%,transparent)}}}
+/* readability pass: trail signs stay as the brand; everything you read is in the plain text face */
+.stage-h h2,.step h3,.pkg h3,.card h4,.rp h3{font-family:var(--body);font-weight:700;letter-spacing:-.015em;text-transform:none}
+.stage-h h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15}
+.pkg h3{font-size:26px}
+.card h4{font-size:19px;line-height:1.25}
+.step h3{font-size:22px;line-height:1.25}
+.rp h3{font-size:19px}
+.sign h1{font-size:clamp(56px,9vw,104px)}
+.box{box-shadow:0 1px 2px rgba(20,22,20,.05)}
+.wrap{gap:88px}
+.stage{gap:26px}
+.time{font-size:19px}
+@media (prefers-reduced-motion:no-preference){.fresh{animation:fresh .45s ease-out both}@keyframes fresh{from{opacity:.35;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="label">Introduction to Applied Data Science &amp; AI · Group 2 · Deliverable 3 prototype</span>
+    <div class="sign"><h1>Omweg</h1></div>
+    <div class="sign2">The best day takes a detour</div>
+    <p class="what">Omweg plans <b>a whole day out in Limburg</b> from one sentence: places that suit you, busy ones at quiet hours, and always a small local business. Good for you <b>and</b> for the people who live there.</p>
+    <a class="heroapp" href="app.html" aria-label="Open the full Omweg app">
+      <span class="ph" aria-hidden="true"><span class="ph-notch"></span><span class="ph-bar"><i>Omweg</i></span><span class="ph-pkg"><b>Rainy day, warm inside</b><small>€30 · 10:00–15:00 · 4 local</small></span><span class="ph-stop"><em>11:00</em>Vestingmuseum</span><span class="ph-stop"><em>12:00</em>In de Karkol</span><span class="ph-stop"><em>13:12</em>Marres</span><span class="ph-stop"><em>14:30</em>Fixed Gear Coffee</span><span class="ph-btn">Start · route to stop 1</span></span>
+      <span class="tryme tryapp"><svg class="ar-up" width="34" height="40" viewBox="0 0 34 40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 37C6 24 14 12 28 5"/><path d="M21 3l7 2-3 7"/></svg><svg class="ar-left" width="40" height="26" viewBox="0 0 40 26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M38 22C28 22 16 18 5 9"/><path d="M4 16l1-7 7 0"/></svg><span>just want to use it?<br>open the full app</span></span>
+    </a>
+    <ol class="trailmap" aria-label="Stages on this page">
+      <li><a href="#s1"><span class="mk"></span>1 The problem</a></li>
+      <li><a href="#s2"><span class="mk"></span>2 Try it</a></li>
+      <li><a href="#s3"><span class="mk"></span>3 What changes</a></li>
+      <li><a href="#s4"><span class="mk"></span>4 How the AI decides</a></li>
+      <li><a href="#s5"><span class="mk"></span>5 Limits</a></li>
+    </ol>
+    <div class="team"><span><b>Team</b> Tristan Hitz, Joachim, Joris Westerbeek, Francesco Del Prete, Robert Smit</span><span>ADSAI class A1 · Zuyd 2026–2027</span><span>Supervisors J. Kornips, D.T. Henssen</span></div>
+  </header>
+
+  <section class="stage" id="s1">
+    <div class="stage-h">
+      <div class="post"><span class="n">Stage 1</span></div>
+      <h2>Tourism keeps Limburg going, but it all lands in the same places</h2>
+      <p class="lead">Travel apps rank by popularity, so everyone ends up in the same places at the same time.</p>
+    </div>
+    <div class="facts">
+      <div class="fact box"><span class="big">47%</span><p>of Maastricht residents think the city already has too many visitors, mostly because of traffic and litter.</p><small>Maastricht Forum, cited in our report [1]</small></div>
+      <div class="fact box"><span class="big">€2.2bn</span><p>direct turnover from tourism in South Limburg, with about 22,000 direct jobs. Fewer visitors is not the answer.</p><small>KHN / Visit Zuid-Limburg</small></div>
+      <div class="fact box"><span class="big">Same top 10</span><p>Google Maps and TripAdvisor rank by popularity, and ChatGPT itineraries ignore crowds and can invent places.</p><small>Our analysis, report §1.1</small></div>
+    </div>
+  </section>
+
+  <section class="stage" id="s2">
+    <div class="stage-h">
+      <div class="post"><span class="n">Stage 2</span></div>
+      <div class="h-row"><h2>Try it: describe your day in your own words</h2><a class="applink" href="app.html">Full app <svg class="ico" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      <p class="lead">Press <b>Plan my day</b> and get a full day, with a reason for every stop.</p>
+    </div>
+    <div class="askbox box">
+      <div class="yourturn"><label for="askinput">Your turn</label></div>
+      <form class="askrow" id="askform" autocomplete="off">
+        <input id="askinput" type="text" placeholder="Like a message to a friend: sunny Sunday, cheap, art and good coffee">
+        <button class="go" type="submit">Plan my day</button>
+      </form>
+      <div class="examples" id="examples"><span class="label">No idea? Start from an example</span></div>
+      <div class="heard" id="heard"></div>
+    </div>
+    <div class="dayout">
+      <div class="dayleft" id="day"></div>
+      <aside class="side">
+        <div class="box mapbox" id="map"></div>
+        <div class="legend"><span><span class="mk y"></span>Local business</span><span><span class="sw" style="background:#3D8BFF;border-radius:50%"></span>Start</span><span><span class="sw" style="background:transparent;outline:2.5px solid #A77BFF;outline-offset:-2px"></span>Finish</span></div>
+        <div class="row"><label class="label" for="base">Start from</label> <select id="base" style="font:600 15px var(--body);padding:4px 6px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:2px;margin-left:6px"></select></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="stage" id="s3">
+    <div class="stage-h">
+      <div class="post"><span class="n">Stage 3</span></div>
+      <h2>What changes compared with a normal travel app</h2>
+      <p class="lead">Your request from <a href="#s2">stage 2</a>, planned by Omweg and by a typical travel app.</p>
+    </div>
+    <p class="verdict" id="verdict"></p>
+    <div class="cmp box">
+      <div class="ctrl">
+        <span class="ctrl-l">Omweg's two ideas</span>
+        <label class="tpill"><input type="checkbox" id="crowd" checked><span class="sw-track" aria-hidden="true"><span class="knob"><svg viewBox="0 0 30 30" aria-hidden="true"><circle cx="10.5" cy="12" r="2.2"/><circle cx="19.5" cy="12" r="2.2"/><path class="smile" d="M9 17.5q6 6 12 0"/><path class="frown" d="M9.5 21q5.5-4.5 11 0"/></svg></span></span><b>Plan around crowds</b></label>
+        <label class="tpill"><input type="checkbox" id="local" checked><span class="sw-track" aria-hidden="true"><span class="knob"><svg viewBox="0 0 30 30" aria-hidden="true"><circle cx="10.5" cy="12" r="2.2"/><circle cx="19.5" cy="12" r="2.2"/><path class="smile" d="M9 17.5q6 6 12 0"/><path class="frown" d="M9.5 21q5.5-4.5 11 0"/></svg></span></span><b>Prefer local businesses</b></label>
+        <span class="tryme" id="tryme"><svg width="34" height="22" viewBox="0 0 34 22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M32 18C24 20 12 18 5 7"/><path d="M3 13l2-6 6 2"/></svg>try switching one off</span>
+      </div>
+      <div class="effs"><span class="eff" id="eff-crowd"></span><span class="eff" id="eff-local"></span></div>
+      <p class="chartcap"><b>Top:</b> Omweg. <b>Bottom:</b> a typical app that picks the most popular place. Colour shows how crowded each place is when you arrive.</p>
+      <div id="lanes"></div>
+      <div class="legend"><span><span class="sw" style="background:var(--yellow)"></span>Yellow line = local business</span></div>
+    </div>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section class="stage" id="s4">
+    <div class="stage-h">
+      <div class="post"><span class="n">Stage 4</span></div>
+      <h2>How the AI decides, in three steps</h2>
+      <p class="lead">The technique is k-nearest neighbours (k-NN): turn everything into numbers, then pick what is closest. Omweg does it twice. Every step below works on the request from stage 2, so it changes when you type something else.</p>
+    </div>
+    <div class="steps">
+      <article class="step box">
+        <span class="k">A</span>
+        <h3>Your words become numbers</h3>
+        <p class="plain">An AI agent turns your sentence into criteria.</p>
+        <aside class="postit"><b>About the AI · 1/3</b><span>In a real version a language model (LLM) reads your sentence. Here simple rules do it, so every step can be checked.</span></aside>
+        <div class="vis" id="stepA"></div>
+      </article>
+      <article class="step box">
+        <span class="k">B</span>
+        <h3>The nearest day package is chosen</h3>
+        <p class="plain">Eight day packages, each described by numbers. The closest one wins: shorter bar, better fit.</p>
+        <div class="vis" id="stepB"></div>
+      </article>
+      <article class="step box">
+        <span class="k">C</span>
+        <h3>Each stop gets the nearest real place</h3>
+        <p class="plain">For each stop, all <span class="ds-n">54</span> places are compared at your arrival time. The closest open place wins.</p>
+        <aside class="postit"><b>About the AI · 2/3</b><span>This part runs for real: k-NN computes every distance live in your browser, on our database of places.</span></aside>
+        <div class="vis" id="stepC"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="stage" id="s5">
+    <div class="stage-h">
+      <div class="post"><span class="n">Stage 5</span></div>
+      <h2>What this prototype does not do yet</h2>
+    </div>
+    <div class="lim3">
+      <div class="lim box"><span class="label">Data</span><p id="dsnote"></p><p>Crowd levels and peak hours are our estimates.</p><p class="next"><b>Next step</b> Real visitor data: ticket sales, municipal counts or the app's own use.</p></div>
+      <div class="lim postit lim-ai"><b>About the AI · 3/3</b><span>The language model is simulated by simple rules, so unusual sentences may be misread.</span><span class="next"><b>Next step</b> Plug in an LLM. Only step A changes; the k-NN planner stays the same.</span></div>
+      <div class="lim box"><span class="label">Scope</span><p>You choose the start town by hand instead of using GPS.</p><p>Routes open in Google Maps.</p><p class="next"><b>Next step</b> GPS start and live routing inside the app.</p></div>
+    </div>
+    <span class="label">In the report</span>
+    <div class="grid3">
+      <div class="rp box"><span class="label">Report §2.1</span><h3>k-NN, twice</h3><p>Steps B and C. No training: distances are computed when you ask, so a new café only needs a row in the database.</p></div>
+      <div class="rp box"><span class="label">Report §2.1</span><h3>Scaled numbers</h3><p>All criteria are standardised (z-scores), so euros don't outweigh hours. Few criteria per step keeps distances meaningful.</p></div>
+      <div class="rp box"><span class="label">Report §2.2</span><h3>Bias and local places</h3><p>Crowd timing and a preference for local businesses counter the popularity bias of normal apps (stage 3). A local business is small, independent and not a headline attraction (crowd at most 3).</p></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+const state={metric:"euclid",crowd:true,local:true,base:"Maastricht",cur:null,open:0,slot:0};
+/*@ENGINE-START@*/
+// Two rules applied to every place when the data loads:
+// - a place that is never busy (crowd 1-2) has no rush hour worth planning around;
+// - "local business" = small and independent (the data flag) AND not a headline attraction (crowd at most 3).
+const P=([{"name":"Vrijthof","town":"Maastricht","lat":50.8489,"lng":5.6877,"cat":"culture","kind":"square","price":0,"dur":0.5,"indoor":0,"crowd":4,"open":[0,24],"peak":[13,17],"meal":null,"local":false,"blurb":"Maastricht's largest square, framed by Saint Servatius, Sint Janskerk and café terraces.","source":"https://www.visitmaastricht.com/","conf":"ESTIMATED"},{"name":"Basilica of Saint Servatius and Treasury","town":"Maastricht","lat":50.8492,"lng":5.6865,"cat":"culture","kind":"church","price":4.5,"dur":1,"indoor":1,"crowd":3,"open":[10,17],"peak":[13,16],"meal":null,"local":false,"blurb":"Romanesque basilica over the grave of Saint Servatius; the paid treasury holds medieval reliquaries. Sunday opening from 12:30.","source":"https://www.kidsproof.nl/zuid-limburg/uitje/schatkamer-sint-servaas-basiliek-maastricht-kerk","conf":"ESTIMATED"},{"name":"Sint Janskerk tower","town":"Maastricht","lat":50.8484,"lng":5.6876,"cat":"culture","kind":"viewpoint","price":4,"dur":0.75,"indoor":1,"crowd":2,"open":[11,16],"peak":[13,15],"meal":null,"local":false,"blurb":"Climb the red Gothic tower, about 79 metres and the city's tallest; closed to visitors on Sundays.","source":"https://www.dagjeweg.nl/tip/7396/Sint-Janskerk","conf":"ESTIMATED"},{"name":"Boekhandel Dominicanen","town":"Maastricht","lat":50.8501,"lng":5.6896,"cat":"shopping","kind":"shop","price":0,"dur":0.5,"indoor":1,"crowd":4,"open":[10,18],"peak":[13,16],"meal":null,"local":false,"blurb":"Bookshop inside a 13th-century Dominican church, with a café in the former choir.","source":"https://www.boekhandeldominicanen.nl/","conf":"ESTIMATED"},{"name":"Markt weekly market","town":"Maastricht","lat":50.8515,"lng":5.6912,"cat":"shopping","kind":"market","price":0,"dur":1,"indoor":0,"crowd":4,"open":[9,15],"peak":[10,13],"meal":null,"local":false,"blurb":"Open-air market on the Markt square; the large general market is on Friday, a smaller one on Wednesday. Not held at weekends.","source":"https://kiosk.visitmaastricht.com/events-calendar/3228273155/friday-market","conf":"ESTIMATED"},{"name":"Bisschopsmolen","town":"Maastricht","lat":50.8464,"lng":5.6926,"cat":"food","kind":"bakery","price":6,"dur":0.75,"indoor":1,"crowd":3,"open":[9,17],"peak":[11,15],"meal":"coffee","local":true,"blurb":"Working watermill and bakery on the Jeker selling spelt vlaai and sourdough bread. Closed Mondays.","source":"https://www.bisschopsmolen.nl/wp-content/uploads/2026/05/Menukaarten-2026.pdf","conf":"ESTIMATED"},{"name":"In den Ouden Vogelstruys","town":"Maastricht","lat":50.8484,"lng":5.6889,"cat":"food","kind":"cafe","price":15,"dur":1,"indoor":1,"crowd":4,"open":[10,24],"peak":[12,17],"meal":"lunch","local":false,"blurb":"Historic brown café on the Vrijthof serving Limburg snacks, sandwiches and local beers.","source":"https://www.visitmaastricht.com/","conf":"ESTIMATED"},{"name":"Helpoort","town":"Maastricht","lat":50.8459,"lng":5.6945,"cat":"culture","kind":"monument","price":0,"dur":0.25,"indoor":0,"crowd":2,"open":[0,24],"peak":null,"meal":null,"local":false,"blurb":"The oldest surviving city gate in the Netherlands, built in 1229 as part of Maastricht's first walls.","source":"https://www.visitmaastricht.com/","conf":"ESTIMATED"},{"name":"Basilica of Our Lady","town":"Maastricht","lat":50.8475,"lng":5.6935,"cat":"culture","kind":"church","price":0,"dur":0.5,"indoor":1,"crowd":3,"open":[10,17],"peak":[12,16],"meal":null,"local":false,"blurb":"Romanesque basilica with the candle-lit Star of the Sea chapel; church entry is free.","source":"https://www.visitmaastricht.com/","conf":"ESTIMATED"},{"name":"Stadspark and city walls","town":"Maastricht","lat":50.845,"lng":5.69,"cat":"nature","kind":"park","price":0,"dur":1,"indoor":0,"crowd":2,"open":[0,24],"peak":[13,17],"meal":null,"local":false,"blurb":"City park along the medieval ramparts and the Jeker, with deer enclosure and wall walk.","source":"https://www.visitmaastricht.com/","conf":"ESTIMATED"},{"name":"Natural History Museum Maastricht","town":"Maastricht","lat":50.845,"lng":5.6878,"cat":"culture","kind":"museum","price":11.5,"dur":1.5,"indoor":1,"crowd":2,"open":[13,17],"peak":[14,16],"meal":null,"local":false,"blurb":"Regional natural history museum with Mosasaurus fossils from the Sint Pietersberg; open during a multi-year renovation.","source":"https://www.nhmmaastricht.nl/bezoek/","conf":"CONFIRMED"},{"name":"Centre Céramique","town":"Maastricht","lat":50.8459,"lng":5.7012,"cat":"culture","kind":"library","price":0,"dur":1,"indoor":1,"crowd":1,"open":[10,17],"peak":null,"meal":null,"local":false,"blurb":"Public library in Céramique; the city's history is now shown in the paid Maastricht Museum on its first floor (separate entry).","source":"https://www.centreceramique.nl/","conf":"ESTIMATED"},{"name":"Bonnefanten","town":"Maastricht","lat":50.8425,"lng":5.7013,"cat":"culture","kind":"museum","price":22,"dur":2,"indoor":1,"crowd":3,"open":[11,17],"peak":[13,16],"meal":null,"local":false,"blurb":"Museum of old masters and contemporary art in Aldo Rossi's domed building; galleries closed 26 Oct to 10 Nov 2026.","source":"https://bonnefanten.nl/en/see-and-do/practical-information/prices-address-and-route","conf":"ESTIMATED"},{"name":"Casemates Waldeck (Kazematten)","town":"Maastricht","lat":50.8434,"lng":5.6803,"cat":"culture","kind":"tour","price":9.95,"dur":1,"indoor":1,"crowd":2,"open":[12,15],"peak":[13,15],"meal":null,"local":false,"blurb":"Guided tour through 18th-century defensive tunnels under Waldeck bastion; tickets online or in advance only.","source":"https://www.exploremaastricht.nl/rondleiding/rondleiding-kazematten-waldeck","conf":"ESTIMATED"},{"name":"Fort Sint Pieter","town":"Maastricht","lat":50.836,"lng":5.684,"cat":"culture","kind":"tour","price":9.95,"dur":1,"indoor":0,"crowd":3,"open":[11,16],"peak":[12,15],"meal":null,"local":false,"blurb":"Restored 1702 fort on the Sint Pietersberg with guided tours every day and views over the Maas valley.","source":"https://www.exploremaastricht.nl/rondleiding/rondleiding-fort-sint-pieter","conf":"ESTIMATED"},{"name":"Caves of Sint Pietersberg (Grotten Noord / Zonneberg)","town":"Maastricht","lat":50.8353,"lng":5.6853,"cat":"culture","kind":"cave","price":9.95,"dur":1.25,"indoor":1,"crowd":3,"open":[11,16],"peak":[12,15],"meal":null,"local":false,"blurb":"Lantern-lit guided tour through marl quarry tunnels with centuries of charcoal drawings; Grotten Noord runs daily.","source":"https://www.exploremaastricht.nl/rondleiding/rondleiding-grotten-noord","conf":"ESTIMATED"},{"name":"ENCI quarry walk","town":"Maastricht","lat":50.8242,"lng":5.6825,"cat":"nature","kind":"walk","price":0,"dur":2,"indoor":0,"crowd":2,"open":[8,18],"peak":[11,15],"meal":null,"local":false,"blurb":"Former cement quarry managed by Natuurmonumenten; viewpoint reached by 215 steps, open sunrise to sunset.","source":"https://www.natuurmonumenten.nl/pdf/natuurgebieden/sint-pietersberg/route/groeve-route-sint-pietersberg","conf":"ESTIMATED"},{"name":"Maas boat trip (Rederij Stiphout)","town":"Maastricht","lat":50.851,"lng":5.6941,"cat":"culture","kind":"tour","price":16.5,"dur":0.8,"indoor":1,"crowd":3,"open":[11,16],"peak":[12,15],"meal":null,"local":false,"blurb":"Fifty-minute sightseeing cruise on the Maas past the city's bridges and riverside fortifications.","source":"https://www.stiphout.nl/boottochten","conf":"ESTIMATED"},{"name":"Apostelhoeve vineyard","town":"Maastricht","lat":50.8296,"lng":5.6643,"cat":"food","kind":"vineyard","price":25,"dur":1.5,"indoor":0,"crowd":2,"open":[12,17],"peak":[13,16],"meal":null,"local":true,"blurb":"Family wine estate on the Louwberg slopes above the Jeker valley; tours end with a tasting of its own wines.","source":"https://www.apostelhoeve.nl/","conf":"ESTIMATED"},{"name":"Gemeentegrot Valkenburg","town":"Valkenburg","lat":50.8624,"lng":5.8287,"cat":"culture","kind":"cave","price":11.25,"dur":1,"indoor":1,"crowd":4,"open":[11,17],"peak":[12,15],"meal":null,"local":false,"blurb":"Marl caves toured on foot or by small train; no regular tours 1 Nov to 10 Jan except the Christmas market.","source":"https://www.gemeentegrot.nl/","conf":"CONFIRMED"},{"name":"Valkenburg castle ruin and Fluweelengrot","town":"Valkenburg","lat":50.8619,"lng":5.8308,"cat":"culture","kind":"castle","price":9.5,"dur":1.5,"indoor":0,"crowd":4,"open":[10,16],"peak":[12,15],"meal":null,"local":false,"blurb":"The Netherlands' only hilltop castle ruin, linked to the Fluweelengrot cave; cave tours pause from 2 Nov.","source":"https://www.kasteelvalkenburg.nl/en/info/opening-hours","conf":"ESTIMATED"},{"name":"Steenkolenmijn Valkenburg","town":"Valkenburg","lat":50.8565,"lng":5.8259,"cat":"family","kind":"tour","price":16.5,"dur":1.25,"indoor":1,"crowd":3,"open":[11,16],"peak":[12,15],"meal":null,"local":true,"blurb":"Reconstructed coal mine in marl galleries, toured hourly with guides; tours 11:00 to 15:00 after 1 November.","source":"https://steenkolenmijn.nl/entreeprijzen/","conf":"CONFIRMED"},{"name":"Thermae 2000","town":"Valkenburg","lat":50.8601,"lng":5.8239,"cat":"wellness","kind":"spa","price":52,"dur":4,"indoor":1,"crowd":3,"open":[10,22],"peak":[13,18],"meal":null,"local":false,"blurb":"Thermal baths and saunas on the Cauberg fed by mineral water; day entry €47.50-59.50, reservation required.","source":"https://www.thermae.nl/tarieven/","conf":"CONFIRMED"},{"name":"Brand brewery Wijlre","town":"Wijlre","lat":50.8307,"lng":5.8941,"cat":"food","kind":"brewery","price":10,"dur":1,"indoor":1,"crowd":2,"open":[11,18],"peak":[13,16],"meal":null,"local":false,"blurb":"Historic brewery with tasting room; pilsner production moved away, Wijlre now focuses on specialty beers.","source":"https://www.omroepbrabant.nl/nieuws/4155013/het-bier-waar-limburg-trots-op-is-komt-straks-uit-brabant","conf":"ESTIMATED"},{"name":"Gulperberg","town":"Gulpen","lat":50.8134,"lng":5.8996,"cat":"nature","kind":"viewpoint","price":0,"dur":1,"indoor":0,"crowd":2,"open":[0,24],"peak":[12,16],"meal":null,"local":false,"blurb":"Hill above Gulpen with wide views over the Gulp and Geul valleys and a short loop walk.","source":"https://www.visitzuidlimburg.com/","conf":"ESTIMATED"},{"name":"Geul valley walk","town":"Epen","lat":50.776,"lng":5.914,"cat":"nature","kind":"walk","price":0,"dur":3,"indoor":0,"crowd":2,"open":[0,24],"peak":[11,15],"meal":null,"local":false,"blurb":"Walk along the meandering Geul through meadows and hillside woods near Epen, the hilliest part of the Netherlands.","source":"https://www.visitzuidlimburg.com/","conf":"ESTIMATED"},{"name":"Three-Country Point","town":"Vaals","lat":50.7547,"lng":6.0209,"cat":"nature","kind":"viewpoint","price":0,"dur":1.5,"indoor":0,"crowd":4,"open":[0,24],"peak":[12,16],"meal":null,"local":false,"blurb":"Meeting point of the Netherlands, Belgium and Germany on the Vaalserberg; tower and labyrinth are paid extras.","source":"https://www.drielandenpunt.nl/","conf":"ESTIMATED"},{"name":"Kasteel Hoensbroek","town":"Heerlen","lat":50.9166,"lng":5.9184,"cat":"culture","kind":"castle","price":16,"dur":2,"indoor":1,"crowd":3,"open":[10,17],"peak":[12,15],"meal":null,"local":false,"blurb":"Large moated castle with rooms from the 14th to 18th century, open to explore freely.","source":"https://www.kasteelhoensbroek.nl/","conf":"ESTIMATED"},{"name":"SnowWorld Landgraaf","town":"Landgraaf","lat":50.8748,"lng":6.0218,"cat":"family","kind":"ski slope","price":38.5,"dur":2,"indoor":1,"crowd":3,"open":[9,22],"peak":[11,16],"meal":null,"local":false,"blurb":"Indoor ski centre built on a former mine spoil heap; 2-hour ski pass listed from €38.50 in 2025.","source":"https://www.snowworld.com/landgraaf/en/node/12","conf":"ESTIMATED"},{"name":"Discovery Museum (formerly Continium)","town":"Kerkrade","lat":50.8613,"lng":6.0585,"cat":"family","kind":"museum","price":15,"dur":2.5,"indoor":1,"crowd":3,"open":[10,17],"peak":[12,15],"meal":null,"local":false,"blurb":"Hands-on science and technology museum next to Kerkrade Centrum station, renamed from Continium in 2021.","source":"https://en.wikipedia.org/wiki/Discovery_Museum_(Netherlands)","conf":"ESTIMATED"},{"name":"GaiaZOO","town":"Kerkrade","lat":50.8696,"lng":6.049,"cat":"family","kind":"zoo","price":28.5,"dur":4,"indoor":0,"crowd":4,"open":[10,17],"peak":[11,15],"meal":null,"local":false,"blurb":"Zoo arranged by habitat zones; open daily, until 16:00 from 2 November.","source":"https://www.gaiazoo.nl/prijzen-tijden/","conf":"CONFIRMED"},{"name":"Rolduc Abbey","town":"Kerkrade","lat":50.8682,"lng":6.0826,"cat":"culture","kind":"abbey","price":0,"dur":1,"indoor":0,"crowd":1,"open":[10,18],"peak":null,"meal":null,"local":false,"blurb":"Former Augustinian abbey founded in 1104, now hotel and brasserie with a courtyard terrace open to visitors.","source":"https://www.fietsnetwerk.nl/en/places/rolduc-abbey-kerkrade/","conf":"ESTIMATED"},{"name":"Sittard old town","town":"Sittard","lat":50.9979,"lng":5.8706,"cat":"culture","kind":"square","price":0,"dur":1.5,"indoor":0,"crowd":2,"open":[0,24],"peak":[13,16],"meal":null,"local":false,"blurb":"Compact old centre around the Markt with half-timbered houses and remains of the town walls.","source":"https://www.visitzuidlimburg.com/","conf":"ESTIMATED"},{"name":"Thorn white village","town":"Thorn","lat":51.1612,"lng":5.8418,"cat":"culture","kind":"walk","price":0,"dur":1.5,"indoor":0,"crowd":3,"open":[0,24],"peak":[12,16],"meal":null,"local":false,"blurb":"Former abbey principality whose cobbled streets are lined with whitewashed houses around the abbey church.","source":"https://www.visitlimburg.nl/","conf":"ESTIMATED"},{"name":"Meinweg National Park","town":"Herkenbosch","lat":51.1561,"lng":6.0849,"cat":"nature","kind":"park","price":0,"dur":3,"indoor":0,"crowd":1,"open":[0,24],"peak":null,"meal":null,"local":false,"blurb":"Heath, woodland and stream valleys on the German border, with marked walks from the visitor centre.","source":"https://www.np-demeinweg.nl/","conf":"ESTIMATED"},{"name":"Designer Outlet Roermond","town":"Roermond","lat":51.2009,"lng":5.989,"cat":"shopping","kind":"shop","price":0,"dur":3,"indoor":0,"crowd":5,"open":[9,21],"peak":[12,17],"meal":null,"local":false,"blurb":"Open-air outlet centre with around 200 brand stores beside Roermond's old town.","source":"https://www.mcarthurglen.com/nl/outlets/nl/designer-outlet-roermond/","conf":"CONFIRMED"},{"name":"Limburgs Museum","town":"Venlo","lat":51.3667,"lng":6.1719,"cat":"culture","kind":"museum","price":17.5,"dur":2,"indoor":1,"crowd":2,"open":[11,17],"peak":[13,16],"meal":null,"local":false,"blurb":"Provincial history museum covering Limburg from prehistory to today; closed Mondays.","source":"https://www.limburgsmuseum.nl/en","conf":"ESTIMATED"},{"name":"Toverland","town":"Sevenum","lat":51.3982,"lng":5.9838,"cat":"family","kind":"theme park","price":39.5,"dur":6,"indoor":0,"crowd":4,"open":[10,18],"peak":[11,16],"meal":null,"local":false,"blurb":"Theme park with indoor and outdoor halls of rides; Halloween season runs to 8 November 2026.","source":"https://www.toverland.com/","conf":"ESTIMATED"},{"name":"Café Sjiek","town":"Maastricht","lat":50.8454,"lng":5.6924,"cat":"food","kind":"restaurant","price":35,"dur":1.5,"indoor":1,"crowd":4,"open":[12,22],"peak":[18,21],"meal":"dinner","local":false,"blurb":"Café-restaurant listed in the Michelin Guide serving zuurvlees and other Limburg dishes; arrive early, reservations generally not taken.","source":"https://guide.michelin.com/en/limburg/maastricht/restaurant/cafe-sjiek","conf":"ESTIMATED"},{"name":"Bakkerij Mathieu Hermans","town":"Maastricht","lat":50.8501,"lng":5.6797,"cat":"food","kind":"bakery","price":5,"dur":0.5,"indoor":1,"crowd":3,"open":[8,16],"peak":[9,12],"meal":"coffee","local":true,"blurb":"Family bakery since 1936 known for rice vlaai and rustic fruit vlaai; weekend queues are common.","source":"https://www.visitmaastricht.com/en/locations/670689854/bakkerij-mathieu-hermans","conf":"ESTIMATED"},{"name":"In de Karkol","town":"Maastricht","lat":50.8488,"lng":5.6941,"cat":"food","kind":"cafe","price":8,"dur":1,"indoor":1,"crowd":3,"open":[12,24],"peak":[16,20],"meal":"coffee","local":true,"blurb":"Small brown café on the Stokstraat, ranked best Dutch café by Misset Horeca in 2016.","source":"https://www.visitmaastricht.com/en/locations/2351395144/in-the-carcol","conf":"ESTIMATED"},{"name":"Friture Reitz","town":"Maastricht","lat":50.8508,"lng":5.6906,"cat":"food","kind":"snack bar","price":6,"dur":0.5,"indoor":0,"crowd":4,"open":[11,18],"peak":[12,14],"meal":"lunch","local":false,"blurb":"Long-standing chip shop on the Markt serving Belgian-style fries; queues move fairly quickly.","source":"https://www.visitmaastricht.com/en/doing/food-and-drink/tasty-fries-in-maastricht","conf":"ESTIMATED"},{"name":"Château Neercanne","town":"Maastricht","lat":50.8187,"lng":5.6673,"cat":"food","kind":"restaurant","price":120,"dur":2.5,"indoor":1,"crowd":1,"open":[12,22],"peak":null,"meal":"dinner","local":false,"blurb":"Michelin-starred restaurant in a terraced 17th-century château above the Jeker valley; lunch menu around €75.","source":"https://guide.michelin.com/gb/en/limburg/maastricht/restaurant/chateau-neercanne","conf":"ESTIMATED"},{"name":"Fotomuseum aan het Vrijthof","town":"Maastricht","lat":50.8482,"lng":5.6879,"cat":"culture","kind":"museum","price":14,"dur":1,"indoor":1,"crowd":2,"open":[10,17],"peak":[13,16],"meal":null,"local":true,"blurb":"Private photography museum in the Spanish Government building, with two major photographer shows a year.","source":"https://fotomuseumaanhetvrijthof.nl/en/bezoek","conf":"CONFIRMED"},{"name":"Jeker valley walk","town":"Maastricht","lat":50.8395,"lng":5.6845,"cat":"nature","kind":"walk","price":0,"dur":2.5,"indoor":0,"crowd":1,"open":[0,24],"peak":null,"meal":null,"local":false,"blurb":"Quiet riverside walk from the city's park belt up the Jeker valley toward Neercanne and Kanne.","source":"https://www.ns.nl/dagje-uit/wandelen/sint-pietersberg","conf":"ESTIMATED"},{"name":"Lichtenberg castle ruin","town":"Maastricht","lat":50.8227,"lng":5.6946,"cat":"culture","kind":"castle","price":0,"dur":0.5,"indoor":0,"crowd":1,"open":[0,24],"peak":null,"meal":null,"local":false,"blurb":"Medieval tower ruin on the Sint Pietersberg plateau, on walking routes between Fort Sint Pieter and the ENCI quarry.","source":"https://www.natuurmonumenten.nl/pdf/natuurgebieden/sint-pietersberg/route/wandelroute-sint-pietersberg-lang","conf":"ESTIMATED"},{"name":"Smaakmakerij Botterweck","town":"Valkenburg","lat":50.8648,"lng":5.8325,"cat":"food","kind":"bakery","price":14,"dur":1,"indoor":1,"crowd":3,"open":[9,18],"peak":[12,15],"meal":"lunch","local":true,"blurb":"Lunchroom, patisserie and ice-cream maker on the Grotestraat, run in Valkenburg for over a century.","source":"https://www.kidsproof.nl/zuid-limburg/?p=33382","conf":"ESTIMATED"},{"name":"Aan de Linde","town":"Valkenburg","lat":50.865,"lng":5.8314,"cat":"food","kind":"restaurant","price":45,"dur":2,"indoor":1,"crowd":3,"open":[12,22],"peak":[18,21],"meal":"dinner","local":true,"blurb":"French-style restaurant with terrace on the Jan Deckerstraat, among Valkenburg's best-reviewed places to eat.","source":"https://wanderlog.com/list/geoCategory/199723/restaurants","conf":"ESTIMATED"},{"name":"Château St. Gerlach","town":"Houthem","lat":50.8699,"lng":5.7984,"cat":"food","kind":"restaurant","price":85,"dur":2.5,"indoor":1,"crowd":1,"open":[12,22],"peak":null,"meal":"dinner","local":false,"blurb":"Relais & Châteaux estate in the Geul valley near Valkenburg with a fine-dining restaurant; smart-casual dress code.","source":"https://joinpearl.co/restaurants/valkenburg-aan-de-geul/chateau-st-gerlach","conf":"ESTIMATED"},{"name":"Gulpener BrouwLokaal","town":"Gulpen","lat":50.8145,"lng":5.89,"cat":"food","kind":"brewery","price":20,"dur":1.5,"indoor":1,"crowd":2,"open":[11,22],"peak":[13,17],"meal":"lunch","local":false,"blurb":"Brewery tap and restaurant of Gulpener; reservable tours end with a blind tasting. Owned by Grolsch since 2026.","source":"https://www.visitzuidlimburg.com/experience-zuid-limburg/activity/rondleiding-gulpener-bierbrouwerij/385030/","conf":"ESTIMATED"},{"name":"Wijngoed Fromberg","town":"Ubachsberg","lat":50.8542,"lng":5.9523,"cat":"food","kind":"vineyard","price":24.5,"dur":1.5,"indoor":0,"crowd":1,"open":[13,18],"peak":[14,17],"meal":null,"local":true,"blurb":"Small family vineyard on the Ubachsberg plateau with wine shop and terrace; open Thursday to Sunday.","source":"https://www.fietsnetwerk.nl/en/places/fromberg-wine-estate-ubachsberg/","conf":"ESTIMATED"},{"name":"Buitenplaats Kasteel Wijlre","town":"Wijlre","lat":50.8301,"lng":5.8905,"cat":"culture","kind":"garden","price":15,"dur":1.5,"indoor":0,"crowd":1,"open":[11,17],"peak":null,"meal":null,"local":true,"blurb":"Castle estate on the Geul with landscaped gardens and a contemporary art pavilion; closed Monday and Tuesday.","source":"https://museum.nl/en/buitenplaats-kasteel-wijlre","conf":"ESTIMATED"},{"name":"Klooster Wittem","town":"Wittem","lat":50.813,"lng":5.913,"cat":"culture","kind":"church","price":0,"dur":1,"indoor":1,"crowd":1,"open":[10,17],"peak":null,"meal":null,"local":false,"blurb":"Redemptorist monastery and pilgrimage church with a listed library, bookshop and monastery garden.","source":"https://visitzuidlimburg.com/experience-zuid-limburg/attraction/klooster-wittem/59439","conf":"ESTIMATED"},{"name":"Grandcafé Jules","town":"Kerkrade","lat":50.865,"lng":6.0616,"cat":"food","kind":"cafe","price":15,"dur":1,"indoor":1,"crowd":2,"open":[10,22],"peak":[12,14],"meal":"lunch","local":true,"blurb":"Casual grand café on the Markt in Kerkrade, serving brunch, lunch and dinner.","source":"https://tableagent.com/eindhoven/grandcafe-jules/","conf":"ESTIMATED"},{"name":"KOFFIE bij Joost & Maartje","town":"Maastricht","lat":50.8464,"lng":5.6919,"cat":"food","kind":"cafe","price":8,"dur":0.75,"indoor":1,"crowd":3,"open":[9,17],"peak":[10,13],"meal":"breakfast","local":true,"blurb":"Small owner-run coffee bar in the Jekerkwartier serving coffee, homemade pastries, breakfast and lunch; no reservations, closed Mondays.","source":"https://www.visitmaastricht.com/en/locations/911097045/koffie-bij-joost-maartje","conf":"ESTIMATED"},{"name":"Van Wijck","town":"Maastricht","lat":50.8496,"lng":5.6993,"cat":"food","kind":"cafe","price":15,"dur":1,"indoor":1,"crowd":3,"open":[8,18],"peak":[10,13],"meal":"breakfast","local":true,"blurb":"Day café on the Wycker Brugstraat serving homemade all-day breakfast, lunch and coffee, open daily 08:00-18:00.","source":"https://www.visitmaastricht.com/en/locations/1004846017/van-wijck-wyck","conf":"ESTIMATED"},{"name":"Blanche Dael Branderij","town":"Maastricht","lat":50.8555,"lng":5.687,"cat":"food","kind":"cafe","price":6,"dur":0.75,"indoor":1,"crowd":2,"open":[10,17],"peak":[11,15],"meal":"coffee","local":true,"blurb":"Coffee café with terrace at the Blanche Dael roastery near the Sphinx quarter; also a coffee shop, barista school and roastery tours.","source":"https://www.visitmaastricht.com/en/locations/1168817745/blanche-dael-roastery","conf":"ESTIMATED"},{"name":"Bakkerij Paulissen Wyck","town":"Maastricht","lat":50.8494,"lng":5.7009,"cat":"food","kind":"bakery","price":6,"dur":0.5,"indoor":1,"crowd":2,"open":[8,18],"peak":[9,12],"meal":"coffee","local":true,"blurb":"Wyck branch of a Maastricht bakery with a small bakery café for coffee, cake and filled rolls; open daily 08:00-18:00.","source":"https://bakkerijpaulissen.nl/locaties/bakkerswinkel-wyck","conf":"ESTIMATED"},{"name":"Patisserie Royale","town":"Maastricht","lat":50.8494,"lng":5.7004,"cat":"food","kind":"bakery","price":6,"dur":0.25,"indoor":1,"crowd":2,"open":[8,17],"peak":[9,12],"meal":"coffee","local":true,"blurb":"Pâtisserie on the Wycker Brugstraat in business since 1929; takeaway pastries, seating not confirmed, Sundays only 10:00-14:00.","source":"https://patisserieroyale.nl/","conf":"ESTIMATED"},{"name":"Peter Lemmens lunchroom Sint Pieter","town":"Maastricht","lat":50.84,"lng":5.6905,"cat":"food","kind":"lunchroom","price":12,"dur":1,"indoor":1,"crowd":2,"open":[8,17],"peak":[10,13],"meal":"breakfast","local":true,"blurb":"Artisanal bakery-patisserie with lunchroom on the Glacisweg in Sint Pieter, one of four regional shops; Saturday from 07:30, closed Sundays.","source":"https://www.peterlemmens.nl/winkels","conf":"ESTIMATED"},{"name":"Coffeelovers Centre Céramique","town":"Maastricht","lat":50.846,"lng":5.7009,"cat":"food","kind":"cafe","price":5,"dur":0.5,"indoor":1,"crowd":2,"open":[10,17],"peak":[11,15],"meal":"coffee","local":false,"blurb":"Coffee bar inside the Centre Céramique city library, part of the Coffeelovers chain with eight locations.","source":"https://www.coffeelovers.nl/onze-locaties/maastricht/ceramique/","conf":"ESTIMATED"},{"name":"Fixed Gear Coffee","town":"Maastricht","lat":50.8509,"lng":5.6881,"cat":"food","kind":"cafe","price":6,"dur":0.5,"indoor":1,"crowd":2,"open":[9,17],"peak":[10,13],"meal":"coffee","local":true,"blurb":"Cycling-themed specialty coffee bar on the Grote Gracht; the small business also runs cafés in Wyck and Valkenburg.","source":"https://fixedgearcoffee.com/","conf":"ESTIMATED"},{"name":"Olivia's Breakfast & Lunch","town":"Maastricht","lat":50.8514,"lng":5.6899,"cat":"food","kind":"lunchroom","price":15,"dur":1,"indoor":1,"crowd":3,"open":[10,16],"peak":[11,14],"meal":"lunch","local":true,"blurb":"Small lunchroom on the Markt serving healthy breakfast and lunch dishes; open 10:00-16:00, closed Tuesdays.","source":"https://oliviasmaastricht.nl/","conf":"ESTIMATED"},{"name":"Café Zondag","town":"Maastricht","lat":50.8495,"lng":5.6986,"cat":"food","kind":"cafe","price":15,"dur":1,"indoor":1,"crowd":3,"open":[10,24],"peak":[12,15],"meal":"lunch","local":true,"blurb":"Small café on the Wycker Brugstraat open daily from 10:00; kitchen serves lunch until 16:00 and dinner 17:00-22:00.","source":"https://www.cafezondag.nl","conf":"ESTIMATED"},{"name":"De Tramhalte","town":"Maastricht","lat":50.8443,"lng":5.6793,"cat":"food","kind":"restaurant","price":32,"dur":1.5,"indoor":1,"crowd":2,"open":[12,23],"peak":[18,21],"meal":"dinner","local":true,"blurb":"Café-restaurant on the Cannerplein near the Jeker valley; dinner mains EUR 21.80-26.60, lunch dishes from EUR 12; closed Monday and Tuesday.","source":"https://detramhaltemaastricht.nl/menu/","conf":"CONFIRMED"},{"name":"Witloof","town":"Maastricht","lat":50.8466,"lng":5.6941,"cat":"food","kind":"restaurant","price":40,"dur":1.5,"indoor":1,"crowd":3,"open":[17,22],"peak":[18,21],"meal":"dinner","local":true,"blurb":"Belgian restaurant in the Jekerkwartier serving classic Belgian dishes; dinner only, Wednesday to Sunday.","source":"https://joinpearl.co/restaurants/maastricht/witloof","conf":"ESTIMATED"},{"name":"Tabkeaw","town":"Maastricht","lat":50.8477,"lng":5.6983,"cat":"food","kind":"restaurant","price":35,"dur":1.5,"indoor":1,"crowd":3,"open":[17,23],"peak":[18,21],"meal":"dinner","local":true,"blurb":"Thai restaurant on the Rechtstraat in Wyck, listed in the Michelin Guide at the mid price level; dinner only, closed Wednesdays.","source":"https://guide.michelin.com/en/limburg/maastricht/restaurant/tabkeaw","conf":"ESTIMATED"},{"name":"WY.","town":"Maastricht","lat":50.8462,"lng":5.6866,"cat":"food","kind":"restaurant","price":80,"dur":2.5,"indoor":1,"crowd":2,"open":[15,24],"peak":[19,22],"meal":"dinner","local":true,"blurb":"Modern-cuisine restaurant and wine bar in the Michelin Guide, upper price level; entrance via Kakeberg 6B, closed Tuesday and Wednesday.","source":"https://guide.michelin.com/en/limburg/maastricht/restaurant/wy","conf":"ESTIMATED"},{"name":"Marres, House for Contemporary Culture","town":"Maastricht","lat":50.8519,"lng":5.6858,"cat":"culture","kind":"gallery","price":10,"dur":1.25,"indoor":1,"crowd":1,"open":[12,17],"peak":null,"meal":null,"local":true,"blurb":"Contemporary art and culture house on the Capucijnenstraat with garden restaurant; Celina Eceiza show until 3 January 2027, closed Mondays.","source":"https://www.marres.org/en/visit","conf":"CONFIRMED"},{"name":"Vestingmuseum (Helpoort)","town":"Maastricht","lat":50.8456,"lng":5.6945,"cat":"culture","kind":"museum","price":6,"dur":0.75,"indoor":1,"crowd":1,"open":[11,16],"peak":null,"meal":null,"local":true,"blurb":"Volunteer-run fortification museum inside the 1229 Helpoort gate; open Wednesday-Sunday, 15 March to 30 December. Museumkaart not valid.","source":"https://vestingmuseummaastricht.nl/","conf":"CONFIRMED"},{"name":"Maastricht Museum","town":"Maastricht","lat":50.8461,"lng":5.7014,"cat":"culture","kind":"museum","price":11.5,"dur":1.5,"indoor":1,"crowd":2,"open":[10,17],"peak":[13,16],"meal":null,"local":false,"blurb":"City history museum on the first floor of Centre Céramique, telling Maastricht's story through art, heritage and objects; closed Mondays.","source":"https://www.visitmaastricht.com/en/locations/2999364960/maastricht-museum","conf":"CONFIRMED"},{"name":"Jekerkwartier stroll","town":"Maastricht","lat":50.8449,"lng":5.6905,"cat":"culture","kind":"walk","price":0,"dur":1,"indoor":0,"crowd":3,"open":[0,24],"peak":[13,17],"meal":null,"local":false,"blurb":"Old quarter between the medieval walls and the Jeker with narrow streets, the Helpoort, a working watermill and small bistros.","source":"https://visitmaastricht.com/discover-maastricht/districts/jeker-quarter","conf":"ESTIMATED"},{"name":"Frontenpark (Lage and Hoge Fronten)","town":"Maastricht","lat":50.8572,"lng":5.6853,"cat":"nature","kind":"park","price":0,"dur":1.5,"indoor":0,"crowd":1,"open":[0,24],"peak":null,"meal":null,"local":false,"blurb":"Rugged park of about 20 hectares over 17th-19th century fortifications, home to wall lizards; slopes on the Hoge Fronten are uneven.","source":"https://www.visitmaastricht.com/en/locations/3036857438/frontenpark","conf":"ESTIMATED"},{"name":"Boekhandel De Tribune","town":"Maastricht","lat":50.8473,"lng":5.6897,"cat":"shopping","kind":"shop","price":0,"dur":0.5,"indoor":1,"crowd":1,"open":[9,17],"peak":null,"meal":null,"local":true,"blurb":"Bookshop on the Kapoenstraat near the Vrijthof; open Tuesday to Saturday, normally closed Sunday and Monday.","source":"https://www.detribune.nl/","conf":"CONFIRMED"},{"name":"Friandises Chocolaterie","town":"Maastricht","lat":50.8494,"lng":5.698,"cat":"shopping","kind":"shop","price":0,"dur":0.25,"indoor":1,"crowd":2,"open":[9,17],"peak":[13,16],"meal":null,"local":true,"blurb":"Chocolate shop on the Wycker Brugstraat selling bonbons, tablets and seasonal chocolate; open daily, Sundays from 12:00.","source":"https://www.friandisesmaastricht.nl/","conf":"CONFIRMED"},{"name":"Maison Blanche Dael","town":"Maastricht","lat":50.8482,"lng":5.6925,"cat":"shopping","kind":"shop","price":0,"dur":0.25,"indoor":1,"crowd":2,"open":[10,17],"peak":[13,16],"meal":null,"local":true,"blurb":"Coffee and tea shop on the Wolfstraat of Blanche Dael, roasting coffee in Maastricht since 1878; beans and tea to take away.","source":"https://www.visitmaastricht.com/en/locations/204804531/maison-blanche-dael","conf":"CONFIRMED"},{"name":"Adriaan De Smaakmaker","town":"Maastricht","lat":50.8453,"lng":5.6922,"cat":"shopping","kind":"shop","price":0,"dur":0.25,"indoor":1,"crowd":1,"open":[10,17],"peak":null,"meal":null,"local":true,"blurb":"Small shop on the Sint Pieterstraat selling handmade mustards, jams, chutneys and dressings; closed Sunday and Monday.","source":"https://adriaandesmaakmaker.nl/","conf":"CONFIRMED"},{"name":"Stokstraat quarter","town":"Maastricht","lat":50.8485,"lng":5.6941,"cat":"shopping","kind":"street","price":0,"dur":1,"indoor":0,"crowd":3,"open":[10,18],"peak":[13,16],"meal":null,"local":false,"blurb":"Historic pedestrian streets with designer boutiques, jewellers and a chocolatier, many housed in listed buildings.","source":"https://www.visitmaastricht.com/en/doing/shopping/shopping-in-the-stokstraatkwartier","conf":"ESTIMATED"},{"name":"Rechtstraat (Wyck)","town":"Maastricht","lat":50.8492,"lng":5.6983,"cat":"shopping","kind":"street","price":0,"dur":1,"indoor":0,"crowd":2,"open":[10,18],"peak":[13,16],"meal":null,"local":false,"blurb":"Wyck street lined with mainly small independent boutiques, cafés and restaurants, a short walk across the Sint Servaasbrug.","source":"https://visitmaastricht.com/discover-maastricht/districts/wyck","conf":"ESTIMATED"}]).map((p,i)=>Object.assign({id:i},p,{local:!!p.local&&p.crowd<=3},p.crowd<=2?{peak:null}:{}));
+const CATS={culture:"Culture",nature:"Nature",food:"Food & drink",family:"Family",shopping:"Shopping",wellness:"Wellness",underground:"Underground"};
+const MIX=["food","culture","nature","family","wellness","shopping","underground"];
+const isUnder=p=>/cave|mine|casemate/.test((p.kind||"").toLowerCase());
+const TOWNS={Maastricht:[50.8514,5.6910],Valkenburg:[50.8650,5.8320],Gulpen:[50.8150,5.8890],Heerlen:[50.8882,5.9795],Kerkrade:[50.8656,6.0630],Vaals:[50.7710,6.0180],Sittard:[50.9980,5.8690],Roermond:[51.1940,5.9870],Venlo:[51.3700,6.1720]};
+const TIPS={cave:"It's around 10 °C underground all year. Bring a jacket.",walk:"Stay on the marked paths: many Heuvelland routes cross private farmland.",church:"A working church: keep your voice down and check service times.",square:"People live around this square. Keep the noise down in the evening.",food:"Locals eat here too. Book ahead at weekends instead of queueing outside.",big:"Come by train, bus or bike: parking fills up fast in high season.",def:"Use the bins or take your rubbish with you. Litter is residents' top complaint about tourism."};
+function tipFor(p){const k=(p.kind||"").toLowerCase();
+  if(/cave|mine|casemate/.test(k))return TIPS.cave;if(/walk|viewpoint|park|nature/.test(k))return TIPS.walk;if(/church|abbey/.test(k))return TIPS.church;if(/square|market/.test(k))return TIPS.square;if(p.cat==="food")return TIPS.food;if(p.crowd>=4)return TIPS.big;return TIPS.def}
+
+/* ---------- day packages ---------- */
+const THEMES=[
+ {id:"burg",name:"Bourgondisch tasting trail",d:"Limburg lives 'Burgundian': eat slowly, drink well. A bakery, old streets, lunch, a vineyard or brewery, dinner.",v:{price:75,hours:9,indoor:.6,crowd:3,food:.7,culture:.2,nature:0,family:0,wellness:0,shopping:.1,underground:0},
+  slots:[{l:"Coffee & vlaai",cats:["food"],meal:"coffee"},{l:"Stroll",cats:["culture","shopping"]},{l:"Lunch",cats:["food"],meal:"lunch"},{l:"Tasting",cats:["food"],kinds:["vineyard","brewery"]},{l:"Dinner",cats:["food"],meal:"dinner"}]},
+ {id:"under",name:"Underground Limburg",d:"Marl caves, casemates and mines: the hidden half of the province. Works in any weather.",v:{price:40,hours:6,indoor:1,crowd:3,food:.25,culture:.55,nature:0,family:.2,wellness:0,shopping:0,underground:.8},
+  slots:[{l:"Underground",cats:["culture","family"],kinds:["cave","mine","casemate","tour"]},{l:"Lunch",cats:["food"],meal:"lunch"},{l:"Underground",cats:["culture","family"],kinds:["cave","mine","casemate","tour"]},{l:"Coffee",cats:["food"],meal:"coffee"}]},
+ {id:"rain",name:"Rainy day, warm inside",d:"Museums, a long lunch and a café: a full day without an umbrella.",v:{price:45,hours:7,indoor:1,crowd:2,food:.35,culture:.5,nature:0,family:.05,wellness:0,shopping:.1,underground:0},
+  slots:[{l:"Museum",cats:["culture","family"],indoor:1},{l:"Lunch",cats:["food"],meal:"lunch",indoor:1},{l:"Inside",cats:["culture","family","shopping"],indoor:1},{l:"Coffee",cats:["food"],meal:"coffee",indoor:1}]},
+ {id:"hill",name:"Heuvelland on foot",d:"Hollow lanes, hills and a farm-style lunch in the only hilly part of the Netherlands.",v:{price:30,hours:7,indoor:.2,crowd:1,food:.35,culture:.1,nature:.55,family:0,wellness:0,shopping:0,underground:0},
+  slots:[{l:"Walk",cats:["nature"]},{l:"Lunch",cats:["food"],meal:"lunch"},{l:"Outdoors",cats:["nature","food"],kinds:["viewpoint","vineyard","walk","park"]},{l:"Coffee",cats:["food"],meal:"coffee"}]},
+ {id:"kids",name:"Day out with kids",d:"Two family attractions, lunch in between and a slice of vlaai to finish.",v:{price:60,hours:7,indoor:.5,crowd:3,food:.3,culture:0,nature:0,family:.7,wellness:0,shopping:0,underground:0},
+  slots:[{l:"Family fun",cats:["family"]},{l:"Lunch",cats:["food"],meal:"lunch"},{l:"Family fun",cats:["family","nature"]},{l:"Vlaai",cats:["food"],meal:"coffee"}]},
+ {id:"old",name:"Two thousand years of Maastricht",d:"Roman roots, medieval gates and churches, with breaks in between.",v:{price:30,hours:7,indoor:.5,crowd:3,food:.25,culture:.7,nature:0,family:0,wellness:0,shopping:.05,underground:0},
+  slots:[{l:"History",cats:["culture"],kinds:["church","monument","museum","square","castle","walk","viewpoint","casemate"]},{l:"Coffee",cats:["food"],meal:"coffee"},{l:"History",cats:["culture"],kinds:["church","monument","museum","square","castle","walk","viewpoint","casemate"]},{l:"Lunch",cats:["food"],meal:"lunch"},{l:"History",cats:["culture","shopping"],kinds:["church","monument","museum","square","castle","walk","viewpoint","casemate"]}]},
+ {id:"quiet",name:"The quiet side",d:"Lesser-known places only: the Limburg most visitors walk past.",v:{price:25,hours:6,indoor:.3,crowd:1,food:.3,culture:.35,nature:.35,family:0,wellness:0,shopping:0,underground:0},
+  slots:[{l:"Quiet spot",cats:["nature","culture"],quiet:1},{l:"Lunch",cats:["food"],meal:"lunch",quiet:1},{l:"Quiet spot",cats:["nature","culture"],quiet:1},{l:"Coffee",cats:["food"],meal:"coffee",quiet:1}]},
+ {id:"treat",name:"Treat yourself",d:"Thermal baths and saunas, then a proper dinner.",v:{price:120,hours:7,indoor:.9,crowd:2,food:.45,culture:0,nature:0,family:0,wellness:.55,shopping:0,underground:0},
+  slots:[{l:"Coffee",cats:["food"],meal:"coffee"},{l:"Wellness",cats:["wellness"]},{l:"Dinner",cats:["food"],meal:"dinner"}]}
+];
+const TF=["price","hours","indoor","crowd"].concat(MIX);
+
+/* ---------- maths ---------- */
+const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
+const sd=a=>{const m=mean(a);return Math.sqrt(mean(a.map(x=>(x-m)*(x-m))))||1};
+const TS={};TF.forEach(f=>{const a=THEMES.map(t=>t.v[f]);TS[f]={m:mean(a),s:sd(a)}});
+const PS={};[["price","price"],["indoor","indoor"],["crowd","crowd"]].forEach(([f,k])=>{const a=P.map(p=>p[k]);PS[f]={m:mean(a),s:sd(a)}});
+const KM_UNIT=3, KIND_W=2, LOCAL_W=0.8, INTEREST_W=1, AVOID_W=2, INTEREST_R1=1.5;
+// budget share per stop: a dinner costs more than a coffee
+const STOP_SHARE=sl=>sl.meal==="coffee"?1:sl.meal==="lunch"?2:sl.meal==="dinner"?4:2;
+const stopBudget=(q,theme,sl)=>q.budget*STOP_SHARE(sl)/theme.slots.reduce((a,x)=>a+STOP_SHARE(x),0);
+function km(a,b){const R=6371,r=Math.PI/180,dLa=(b[0]-a[0])*r,dLo=(b[1]-a[1])*r;const h=Math.sin(dLa/2)**2+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function dist(c){const v=Object.values(c);return state.metric==="euclid"?Math.sqrt(v.reduce((s,x)=>s+x*x,0)):v.reduce((s,x)=>s+Math.abs(x),0)}
+function travel(k){const road=k*1.3;if(road<=2.5)return {mode:"walk",min:Math.max(3,Math.round(road/4.5*60)),km:road};return {mode:"by bus or car",min:Math.round(road/28*60+10),km:road}}
+const inPeak=(p,t)=>!!(p.peak&&t>=p.peak[0]&&t<p.peak[1]);
+const crowdAt=(p,t)=>inPeak(p,t)?p.crowd:Math.max(1,p.crowd-2);
+
+/* ---------- the agent ---------- */
+const NUM={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,a:1,an:1};
+const KW={
+ food:["brunch","breakfast","chocolate","cheese","dessert","pastry","pancakes","pie","pub","bar","bars","romantic","date","food","eat","eating","lunch","dinner","restaurant","restaurants","beer","beers","wine","wines","drink","drinks","coffee","cafe","café","tasting","brewery","vlaai","bakery","foodie","culinary","burgundian","bourgondisch","hungry"],
+ culture:["gallery","galleries","exhibition","exhibitions","photography","photos","monument","monuments","heritage","sightseeing","museum","museums","history","historic","historical","church","churches","castle","castles","art","culture","cultural","medieval","architecture","abbey","fort","roman","old_town"],
+ nature:["bike","cycling","parks","river","picnic","landscape","nature","hike","hiking","walk","walking","forest","woods","view","views","hills","hilly","countryside","heath","outdoors","green","heuvelland"],
+ family:["son","daughter","grandchildren","grandkids","playground","animals","kids","children","child","family","fun","zoo","adventure","themepark","rollercoaster","ski","skiing","snow","toddler","teenagers"],
+ wellness:["massage","romantic","pampering","relax","relaxing","spa","wellness","sauna","saunas","thermal","pamper","unwind"],
+ shopping:["shop","shops","shopping","books","bookshop","market","outlet","souvenirs"],
+ underground:["cave","caves","underground","mine","mines","marl","casemate","casemates","grotto","grottoes"]
+};
+function parse(text){
+  const s=" "+text.toLowerCase().replace(/[’]/g,"'").replace(/theme park/g,"themepark").replace(/old town/g,"old_town").replace(/[!?;:()"]/g," ").replace(/,(?!\d)/g," ").replace(/\.(?!\d)/g," ").replace(/\s+/g," ")+" ";
+  const q={},src={};let m;
+  if(/ (free|gratis)(?! time)\b| no money | broke /.test(s)){q.budget=10;src.budget=(s.match(/free|gratis|no money|broke/)||[""])[0]}
+  else if((m=s.match(/(?:under|below|less than|max|maximum|up to|at most|budget of|about|around)\s*€?\s*(\d+(?:[.,]\d+)?)(?!\s*(?:h|hours?|hrs?|am|pm))/))){q.budget=+m[1].replace(",",".");src.budget=m[0].trim()}
+  else if((m=s.match(/€?\s?(\d+(?:[.,]\d+)?)\s?(?:€|euros?|eur)?\s?(?:per person|pp|each|a head)\b/))){q.budget=+m[1].replace(",",".");src.budget=m[0].trim()}
+  else if((m=s.match(/€\s?(\d+(?:[.,]\d+)?)|(\d+(?:[.,]\d+)?)\s?(?:euros?|eur)\b/))){q.budget=+(m[1]||m[2]).replace(",",".");src.budget=m[0].trim()}
+  else if((m=s.match(/not too expensive|cheap|budget|low[- ]cost|inexpensive|affordable|student/))){q.budget=30;src.budget=m[0]}
+  else if((m=s.match(/splurge|luxury|treat (?:myself|ourselves|yourself|my\w*)|special occasion|anniversary|expensive|fancy|spoil/))){q.budget=120;src.budget=m[0]}
+  if((m=s.match(/(\d+(?:[.,]\d+)?|one|two|three|four|five|six|seven|eight|nine|ten|an?|a couple of)\s*(?:hours?|hrs?|h)\b/))){const w=m[1];q.hours=w==="a couple of"?2:(NUM[w]!=null?NUM[w]:+w.replace(",","."));src.hours=m[0].trim()}
+  else if((m=s.match(/half[- ]a[- ]day|half[- ]day/))){q.hours=4;src.hours=m[0]}
+  else if((m=s.match(/(?:full|whole|all|entire)[- ]day|day trip|day out/))){q.hours=8;src.hours=m[0]}
+  else if((m=s.match(/ (?:this |the )?(?:morning|afternoon|evening) /))){q.hours=4;src.hours=m[0].trim()}
+  if((m=s.match(/(?:at|from|after|start at)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/))&&+m[1]<=23){let h=+m[1]+(m[2]?+m[2]/60:0);if(m[3]==="pm"&&h<12)h+=12;if(!m[3]&&h<8)h+=12;q.start=h;src.start=m[0].trim()}
+  else if(/ morning /.test(s)){q.start=9.5;src.start="morning"}
+  else if(/ afternoon /.test(s)){q.start=13;src.start="afternoon"}
+  else if(/ (?:evening|tonight) /.test(s)){q.start=17;src.start=(s.match(/evening|tonight/)||[""])[0]}
+  if((m=s.match(/indoors?|inside|raining|rainy|rain|wet|cold|bad weather|cosy|cozy|storm/))){q.indoor=1;src.indoor=m[0]}
+  else if((m=s.match(/outdoors?|outside|open air|fresh air|sunny|sunshine|nice weather|good weather|warm day/))){q.indoor=0;src.indoor=m[0]}
+  if((m=s.match(/quiet|calm|peaceful|not (?:too )?(?:crowded|busy|touristy)|avoid(?:ing)? (?:the )?crowds|away from (?:the )?crowds|less crowded|hidden gems?|off the beaten (?:track|path)|lesser[- ]known|tranquil|no crowds|like a local|locals/))){q.crowd=1;src.crowd=m[0]}
+  else if((m=s.match(/lively|popular|famous|must[- ]see|highlights?|busy|iconic|first time/))){q.crowd=4;src.crowd=m[0]}
+  else if((m=s.match(/grandparents?|grandma|grandpa|elderly|seniors?|older people|chill|relaxed|slow pace|laid[- ]back/))){q.crowd=1;src.crowd=m[0]}
+  const neg=new Set(),avoid=new Set();
+  for(const mm of s.matchAll(/ (?:not too much|not too many|not much|not many|no more|nothing with|don't want|dont want|without|hate|skip|avoid|not|no) (?:the |any |more |a lot of )?([a-z_]+)/g))neg.add(mm[1]);
+  for(const c of MIX)for(const k of KW[c])if(neg.has(k)){avoid.add(c);src.avoid=(src.avoid?src.avoid+", ":"")+"no "+k}
+  if(avoid.size)q.avoid=[...avoid];
+  const mix={};let any=false;const words=[];
+  for(const c of MIX){let n=0;for(const k of KW[c]){if(!neg.has(k)&&s.includes(" "+k+" ")){n++;words.push(k.replace("themepark","theme park").replace("old_town","old town"))}}if(n){mix[c]=n;any=true}}
+  if(any){const tot=Object.values(mix).reduce((a,b)=>a+b,0);for(const c of MIX)mix[c]=(mix[c]||0)/tot;q.mix=mix;src.mix=words.slice(0,3).join(", ")}
+  let town=null;for(const t in TOWNS){if(s.includes(" "+t.toLowerCase()+" ")){town=t;break}}
+  return {q,src,town};
+}
+
+/* ---------- state ---------- */
+/* why a day came out empty or too short, with what to do about it */
+function emptyNote(m){
+  const n=m.plan.stops.length;if(n>=2)return "";
+  const av=(m.q.avoid||[]).map(f=>CATS[f].toLowerCase());
+  const list=av.length>1?av.slice(0,-1).join(", ")+" and "+av[av.length-1]:av[0];
+  if(av.length>=2)return `<b>Nothing left to plan.</b> You ruled out ${esc(list)}. Remove one of them under <i>Understood</i> above.`;
+  const st=m.q.start!=null?m.q.start:10;
+  if(st>=20)return `<b>Almost everything is closed after ${Math.floor(st)}:00.</b> Try an earlier start.`;
+  if(baseOf(m)!=="Maastricht"&&!m.town)return `<b>Not enough places near ${esc(baseOf(m))} for a full day.</b> Our database is strongest around Maastricht and Valkenburg. <button type="button" class="alt" data-base="Maastricht">Start from Maastricht</button>`;
+  if(m.town)return `<b>Not enough places in ${esc(m.town)} for a full day.</b> Our database is strongest around Maastricht and Valkenburg.`;
+  return `<b>${n?"Only one place fits":"No open places fit"} this request.</b> Try another start time or fewer limits.`;
+}
+const baseOf=m=>m.town||state.base;
+
+/* ---------- round 1 ---------- */
+function rankThemes(q){
+  return THEMES.map(t=>{const c={};
+    if(q.budget!=null)c.price=(t.v.price-q.budget)/TS.price.s;
+    if(q.hours!=null)c.hours=(t.v.hours-q.hours)/TS.hours.s;
+    if(q.indoor!=null)c.indoor=(t.v.indoor-q.indoor)/TS.indoor.s;
+    if(q.crowd!=null)c.crowd=(t.v.crowd-q.crowd)/TS.crowd.s;
+    if(q.mix)MIX.forEach(f=>{c["mix_"+f]=INTEREST_R1*(t.v[f]-q.mix[f])/TS[f].s});
+    if(q.avoid&&!q.mix)q.avoid.forEach(f=>{c["mix_"+f]=INTEREST_R1*t.v[f]/TS[f].s});
+    return {t,c,d:dist(c)}}).sort((a,b)=>a.d-b.d);
+}
+/* ---------- round 2 ---------- */
+function mealOk(p,meal){const k=(p.kind||"").toLowerCase();if(p.cat!=="food")return false;
+  if(meal==="coffee")return p.meal==="coffee"||p.meal==="breakfast"||/bakery|cafe|café|coffee|tea/.test(k);
+  if(meal==="lunch")return p.meal==="lunch"||(/cafe|café|restaurant|bistro|brasserie|market|farm/.test(k)&&p.meal!=="dinner");
+  if(meal==="dinner")return p.meal==="dinner"||/restaurant|bistro|brasserie/.test(k);return true}
+function slotFits(p,slot){
+  if(!slot.cats.includes(p.cat))return false;
+  if(slot.meal&&!mealOk(p,slot.meal))return false;
+  if(!slot.meal&&p.cat==="food"&&!slot.kinds)return false;
+  if(slot.kinds&&slot.cats.length===1&&slot.cats[0]==="food"){const k=(p.kind||"").toLowerCase();if(!slot.kinds.some(x=>k.includes(x)))return false}
+  return true}
+function startAt(p,arrive,slot){let t=arrive;if(slot.meal==="lunch")t=Math.max(t,12);if(slot.meal==="dinner")t=Math.max(t,18.5);
+  if(p.open){if(t<p.open[0]){if(p.open[0]-t<=1.5)t=p.open[0];else return null}if(t+p.dur>p.open[1]+0.01)return null}return t}
+function scoreCand(p,ctx){
+  const {q,slot,prev,t,perStop}=ctx;const k=km(prev,[p.lat,p.lng]),tr=travel(k),arrive=t+tr.min/60;
+  const st=startAt(p,arrive,slot);if(st==null)return {p,closed:true};
+  const c={};
+  if(perStop!=null)c.price=(p.price-perStop)/PS.price.s;
+  const ind=slot.indoor!=null?slot.indoor:q.indoor;if(ind!=null)c.indoor=(p.indoor-ind)/PS.indoor.s;
+  // timing: how busy the place is when you arrive (only counts with crowd planning on)
+  if(state.crowd)c.crowd=(crowdAt(p,st)-1)/PS.crowd.s;
+  // popularity: the user asked for quiet places or for highlights
+  const target=slot.quiet?1:q.crowd;
+  if(target!=null)c.pop=(p.crowd-target)/PS.crowd.s;
+  c.dist=k/KM_UNIT;
+  if(state.local&&!p.local)c.local=LOCAL_W;
+  if(q.mix){const mx=Math.max(...MIX.map(f=>q.mix[f])),share=(q.mix[p.cat]||0)+(isUnder(p)?q.mix.underground:0);c.interest=(1-Math.min(1,share/mx))*INTEREST_W}
+  if(slot.kinds&&!slot.kinds.some(x=>(p.kind||"").toLowerCase().includes(x)))c.kind=KIND_W;
+  if(q.avoid&&(q.avoid.includes(p.cat)||(q.avoid.includes("underground")&&isUnder(p))))c.avoid=AVOID_W;
+  return {p,c,d:dist(c),km:k,tr,arrive,start:st,end:st+p.dur,crowdNow:crowdAt(p,st),peak:inPeak(p,st)};
+}
+function buildPlan(m,mode,ov,order){
+  const q=m.q,theme=m.theme,start=q.start!=null?q.start:10,dayEnd=start+(q.hours!=null?q.hours:11);
+  let prev=TOWNS[baseOf(m)],t=start;const used=new Set(),stops=[];
+  (order||theme.slots.map((_,i)=>i)).forEach(i=>{const slot=theme.slots[i];
+    const all=P.filter(p=>!used.has(p.id)&&slotFits(p,slot)).map(p=>scoreCand(p,{q,slot,prev,t,perStop:q.budget!=null?stopBudget(q,theme,slot):null}));
+    const open=all.filter(r=>!r.closed),closed=all.filter(r=>r.closed);
+    if(mode==="top")open.sort((a,b)=>b.p.crowd-a.p.crowd||a.km-b.km);else open.sort((a,b)=>a.d-b.d);
+    const ind=slot.indoor!=null?slot.indoor:q.indoor;const pool=mode==="top"?open.filter(r=>r.km<=12&&(ind==null||r.p.indoor===ind)):open.filter(r=>r.tr.min<=(stops.length?45:60)); /* no stop is worth a 1-2 hour trip */if(!pool.length)return;
+    let pick=pool[0];if(mode==="omweg"&&ov&&ov[i]!=null){const o=pool.find(r=>r.p.id===ov[i]);if(o)pick=o}
+    if(stops.length>=2&&pick.end>dayEnd+0.25)return;
+    if(mode==="omweg"&&slot.meal==="coffee"&&pick.tr.min>30)return; // no coffee stop worth a long trip
+    used.add(pick.p.id);stops.push(Object.assign({slot,i,ranked:open,closed},pick));prev=[pick.p.lat,pick.p.lng];t=pick.end;
+  });
+  return {stops,start};
+}
+// all orders of the activity slots; meal slots keep their place in the day
+function slotOrders(theme){
+  const free=theme.slots.map((s,i)=>s.meal?null:i).filter(i=>i!=null);
+  const perms=a=>a.length<=1?[a]:a.flatMap((x,k)=>perms(a.slice(0,k).concat(a.slice(k+1))).map(r=>[x].concat(r)));
+  return perms(free).map(pm=>{let k=0;return theme.slots.map((s,i)=>s.meal?i:pm[k++])});
+}
+const planCost=(pl,n)=>pl.stops.reduce((a,s)=>a+s.d,0)+2.5*(n-pl.stops.length);
+function plan(m){
+  const ov=Object.assign({},m.swaps),n=m.theme.slots.length;
+  let order=null,pl=null;
+  for(const o of slotOrders(m.theme)){const c=buildPlan(m,"omweg",ov,o);if(!pl||planCost(c,n)<planCost(pl,n)-1e-9){pl=c;order=o}}
+  pl.localSwap=null;
+  if(state.local&&pl.stops.length&&!pl.stops.some(s=>s.p.local)){
+    let best=null;pl.stops.forEach(s=>{const alt=s.ranked.find(r=>r.p.local&&!pl.stops.some(o=>o.p.id===r.p.id));if(alt){const extra=alt.d-s.d;if(!best||extra<best.extra)best={i:s.i,id:alt.p.id,extra,out:s.p}}});
+    if(best){ov[best.i]=best.id;pl=buildPlan(m,"omweg",ov,order);pl.localSwap=best}
+  }
+  return pl;
+}
+function totals(pl){const st=pl.stops;if(!st.length)return {cost:0,hours:0,km:0,peak:0,local:0,crowd:0};
+  return {cost:st.reduce((s,x)=>s+x.p.price,0),hours:st[st.length-1].end-pl.start,km:st.reduce((s,x)=>s+x.tr.km,0),peak:st.filter(x=>x.peak).length,local:st.filter(x=>x.p.local).length,crowd:mean(st.map(x=>x.crowdNow))}}
+const fit=d=>Math.round(100*Math.exp(-d*d/10));
+
+/* ---------- formatting ---------- */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const eur=v=>v===0?"Free":"€"+(Number.isInteger(v)?v:v.toFixed(2).replace(/0$/,""));
+const hm=t=>{let h=Math.floor(t+1e-6),m=Math.round((t-h)*60);if(m===60){h++;m=0}return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")};
+const hrs=h=>{const t=Math.round(h*4)*15,H=Math.floor(t/60),M=t%60;return H===0?Math.max(5,Math.round(h*60))+" min":H+" h"+(M?" "+M+" min":"")};
+const crowdWord=c=>["","very quiet","quiet","moderate","busy","very busy"][Math.round(c)];
+const FCOL={price:"--f-price",indoor:"--f-indoor",crowd:"--f-crowd",dist:"--f-dist",kind:"--f-kind",local:"--ink",interest:"--f-mix",pop:"--f-kind",avoid:"--bad"};
+const FLAB={price:"Price vs budget",indoor:"Indoor / outdoor",crowd:"Crowd when you arrive",dist:"Travel from previous stop",kind:"Kind of place",local:"Not a local business",interest:"Not what you're into",pop:"Too famous / too obscure for you",avoid:"Something you said no to"};
+function chipList(m){const q=m.q,o=[];
+  if(q.budget!=null)o.push(["budget",q.budget<=10?"Almost free":"Budget about "+eur(q.budget)]);
+  if(q.hours!=null)o.push(["hours",hrs(q.hours)]);
+  if(q.start!=null)o.push(["start","Start "+hm(q.start)]);
+  if(q.indoor!=null)o.push(["indoor",q.indoor?"Indoor":"Outdoor"]);
+  if(q.crowd!=null)o.push(["crowd",q.crowd<=2?"Quiet places":"Highlights"]);
+  if(q.mix)MIX.filter(f=>q.mix[f]>0).forEach(f=>o.push(["mix:"+f,CATS[f]]));
+  if(q.avoid)q.avoid.forEach(f=>o.push(["avoid:"+f,"No "+CATS[f].toLowerCase()]));
+  return o}
+function reasons(s,m){
+  const p=s.p,q=m.q,out=[];
+  if(p.peak){if(s.peak)out.push(["off",`Arrive ${hm(s.start)}, during its usual ${hm(p.peak[0])}–${hm(p.peak[1])} rush`]);
+    else if(s.start<p.peak[0])out.push(["ok",`Arrive ${hm(s.start)}, before the usual ${hm(p.peak[0])}–${hm(p.peak[1])} rush`]);
+    else out.push(["ok",`Arrive ${hm(s.start)}, after the usual ${hm(p.peak[0])}–${hm(p.peak[1])} rush`])}
+  else out.push(["ok","Rarely crowded"]);
+  const ind=s.slot.indoor!=null?s.slot.indoor:q.indoor;
+  if(ind!=null)out.push([p.indoor===ind?"ok":"off",(p.indoor?"Indoor":"Outdoor")+(p.indoor===ind?", as you asked":`, you asked for ${ind?"indoor":"outdoor"}`)]);
+  if(q.budget!=null){const per=stopBudget(q,m.theme,s.slot),a=Math.abs(s.c.price);out.push([a<.35?"ok":a<1?"near":"off",`${p.price===0?"Free":"About "+eur(p.price)}; your budget allows about ${eur(Math.round(per))} for this stop`])}
+  if(p.local)out.push(["ok","Small local business"]);
+  return out}
+/* ---------- icons: drawn as SVG so no phone turns them into emoji ---------- */
+const ICO=(d,w=14,sw=2)=>`<svg class="ico" width="${w}" height="${w}" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+const TI={burg:"M5 2h6l-1 5a2 2 0 0 1-4 0zM8 9v5M5 14h6",under:"M2 14V9a6 6 0 0 1 12 0v5M6 14v-3a2 2 0 0 1 4 0v3",rain:"M2 8a6 6 0 0 1 12 0zM8 8v5a1.5 1.5 0 0 1-3 0",hill:"M1 13l5-7 3 4 2-2 4 5z",kids:"M8 2a4 4 0 0 1 4 4c0 3-4 5-4 5s-4-2-4-5a4 4 0 0 1 4-4zM8 11l-1 4",old:"M2 14V5h2v2h2V5h4v2h2V5h2v9zM7 14v-3h2v3",quiet:"M3 13C3 6 8 3 13 3c0 5-3 10-10 10zM3 13l6-6",treat:"M8 2s4 5 4 8a4 4 0 0 1-8 0c0-3 4-8 4-8z"};
+const TICON=id=>TI[id]?`<svg class="ti" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${TI[id]}"/></svg>`:"";
+const ICON={go:ICO("M5 11L11 5M6 5h5v5"),swap:ICO("M3 5h9M9 2l3 3-3 3M13 11H4M7 8l-3 3 3 3"),right:ICO("M3 8h10M9 4l4 4-4 4"),left:ICO("M13 8H3M7 4L3 8l4 4"),up:ICO("M8 13V3M4 7l4-4 4 4"),ok:ICO("M3 8.5l3.2 3L13 4.5"),off:ICO("M4 4l8 8M12 4l-8 8"),arrow:ICO("M3 8h10M9 4l4 4-4 4",20,2.2),seal:ICO("M3 8.5l3.2 3L13 4.5",30,2.6),done:ICO("M3 8.5l3.2 3L13 4.5",17,2.6)};
+const sym={ok:ICON.ok,near:"≈",off:ICON.off};
+/* ---------- route map (shared by both pages) ---------- */
+const MAAS=[[50.745,5.700],[50.790,5.706],[50.820,5.708],[50.840,5.700],[50.849,5.6975],[50.860,5.697],[50.880,5.690],[50.930,5.730],[50.980,5.765],[51.040,5.790],[51.100,5.810],[51.160,5.830],[51.190,5.940],[51.200,5.985],[51.260,6.020],[51.330,6.120],[51.370,6.175],[51.420,6.150]];
+function mapSVG(m,W){
+  const st=m.plan.stops,b=TOWNS[baseOf(m)];
+  const pts=st.map(s=>[s.p.lat,s.p.lng]).concat([b]);
+  let la0=Math.min(...pts.map(p=>p[0])),la1=Math.max(...pts.map(p=>p[0])),lo0=Math.min(...pts.map(p=>p[1])),lo1=Math.max(...pts.map(p=>p[1]));
+  const pLa=Math.max(.0035,(la1-la0)*.22),pLo=Math.max(.008,(lo1-lo0)*.42);la0-=pLa;la1+=pLa;lo0-=pLo;lo1+=pLo;
+  const kx=Math.cos(51*Math.PI/180);let w=(lo1-lo0)*kx,h=la1-la0;
+  if(h/w>1.05){const e=(h/1.05-w)/kx/2;lo0-=e;lo1+=e;w=(lo1-lo0)*kx}
+  if(h/w<.72){const e=(w*.72-h)/2;la0-=e;la1+=e;h=la1-la0}
+  const H=Math.round(W*h/w),f=(la,lo)=>[(lo-lo0)*kx/w*W,(la1-la)/h*H];
+  const spanKm=(lo1-lo0)*111.32*kx,barKm=spanKm>20?5:spanKm>8?2:spanKm>3?1:0.5,barPx=barKm/spanKm*W;
+  const halo='paint-order="stroke" stroke="var(--paper)" stroke-width="4" stroke-linejoin="round"';
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of your day route" font-family="Barlow, Segoe UI, sans-serif">`;
+  // context: the Maas and nearby towns
+  const river=MAAS.map(p=>f(p[0],p[1]).map(v=>v.toFixed(1)).join(",")).join(" ");
+  s+=`<polyline points="${river}" fill="none" stroke="var(--water)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const inView=MAAS.map(p=>f(p[0],p[1])).filter(([x,y])=>x>30&&x<W-30&&y>30&&y<H-30);
+  for(const t in TOWNS){if(t===baseOf(m))continue;const [x,y]=f(...TOWNS[t]);if(x>20&&x<W-20&&y>20&&y<H-20)s+=`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="11" font-weight="700" letter-spacing="1.2" fill="var(--muted)" text-anchor="middle" ${halo}>${t.toUpperCase()}</text>`}
+  // route legs with direction arrows and travel time
+  const nodes=[f(b[0],b[1])].concat(st.map(x=>f(x.p.lat,x.p.lng))),legs=[];
+  for(let i=1;i<nodes.length;i++){
+    const [x1,y1]=nodes[i-1],[x2,y2]=nodes[i],dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1;
+    s+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--red)" stroke-width="3.5" stroke-dasharray="8 5" stroke-linecap="round"/>`;
+    if(len>46){const ax=x1+dx*.55,ay=y1+dy*.55,ang=Math.atan2(dy,dx)*180/Math.PI;s+=`<path d="M-6,-5 L5,0 L-6,5 z" transform="translate(${ax.toFixed(1)} ${ay.toFixed(1)}) rotate(${ang.toFixed(1)})" fill="var(--red)"/>`}
+    if(len>60)legs.push({x1,y1,dx,dy,len,min:st[i-1].tr.min});
+  }
+  // markers, then labels placed where they don't collide
+  const boxes=nodes.map(([x,y])=>[x-13,y-12,x+13,y+12]);
+  const hit=a=>a[0]<2||a[2]>W-2||a[1]<2||a[3]>H-2||boxes.some(o=>a[0]<o[2]&&a[2]>o[0]&&a[1]<o[3]&&a[3]>o[1]);
+  const [bx,by]=nodes[0];
+  s+=`<circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="9" fill="#3D8BFF" stroke="#fff" stroke-width="3"><title>Start</title></circle>`;
+  if(st.length>1){const [fx,fy]=nodes[st.length];s+=`<rect x="${(fx-17).toFixed(1)}" y="${(fy-16).toFixed(1)}" width="34" height="32" rx="3" fill="none" stroke="#A77BFF" stroke-width="3.5"><title>Finish</title></rect>`}
+  st.forEach((x,i)=>{const [px,py]=nodes[i+1],ts=tripSt(i),y=x.p.local||ts;
+    s+=`<g><title>${i+1}. ${esc(x.p.name)}${ts==="done"?" (visited)":ts==="go"?" (on the way)":""}</title><rect x="${(px-12).toFixed(1)}" y="${(py-11).toFixed(1)}" width="24" height="22" fill="${ts==="done"?"var(--ok)":ts==="go"?"#FF8A3D":x.p.local?"var(--yellow)":"var(--red)"}" stroke="#141614" stroke-width="2"/>${y?"":`<rect x="${(px-11).toFixed(1)}" y="${(py-10).toFixed(1)}" width="22" height="10" fill="#fff"/>`}<text x="${px.toFixed(1)}" y="${(py+5).toFixed(1)}" font-size="14" font-weight="800" text-anchor="middle" fill="#141614" font-family="Barlow Condensed, Arial Narrow, sans-serif">${i+1}</text></g>`});
+  const labels=[[bx,by,"Start",`${baseOf(m)} centre`,"#3D8BFF"]].concat(st.map((x,i)=>{const last=st.length>1&&i===st.length-1,nm=x.p.name.length>(last?18:24)?x.p.name.slice(0,last?17:23)+"…":x.p.name;return [nodes[i+1][0],nodes[i+1][1],last?"Finish "+hm(x.start):hm(x.start),nm,last?"#A77BFF":null]}));
+  labels.forEach(([x,y,a,t,col])=>{
+    const tw=(a.length+t.length+1)*6.4+4,cand=[["start",x+17,y+4,[x+15,y-9,x+17+tw,y+8]],["end",x-17,y+4,[x-17-tw,y-9,x-15,y+8]],["middle",x,y+29,[x-tw/2,y+16,x+tw/2,y+33]],["middle",x,y-19,[x-tw/2,y-32,x+tw/2,y-15]]];
+    const c=cand.find(c=>!hit(c[3]))||cand[0];boxes.push(c[3]);
+    s+=`<text x="${c[1].toFixed(1)}" y="${c[2].toFixed(1)}" font-size="12.5" text-anchor="${c[0]}" fill="var(--ink)" ${halo}><tspan font-weight="700"${col?` fill="${col}"`:""}>${esc(a)}</tspan> ${esc(t)}</text>`});
+  // river name where it does not cover a stop or a label
+  for(const [rx,ry] of inView.slice(Math.floor(inView.length/2)).concat(inView.slice(0,Math.floor(inView.length/2)))){const bx=[rx+7,ry-8,rx+40,ry+6];if(!hit(bx)){boxes.push(bx);s+=`<text x="${(rx+9).toFixed(1)}" y="${(ry+4).toFixed(1)}" font-size="12" font-style="italic" fill="var(--water-ink)" ${halo}>Maas</text>`;break}}
+  // travel times last, only where they fit without covering a name or another time
+  legs.forEach(L=>{const txt=L.min+" min",tw=txt.length*6+4;
+    for(const f of [.3,.5,.7])for(const side of [1,-1]){const x=L.x1+L.dx*f-L.dy/L.len*12*side,y=L.y1+L.dy*f+L.dx/L.len*12*side,bx=[x-tw/2,y-8,x+tw/2,y+5];
+      if(!hit(bx)){boxes.push(bx);s+=`<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" font-size="11" fill="var(--muted)" text-anchor="middle" ${halo}>${txt}</text>`;return}}});
+  s+=`<g transform="translate(12 ${H-14})"><rect width="${barPx.toFixed(1)}" height="4" fill="var(--ink)"/><text y="-6" font-size="11" fill="var(--muted)">${barKm} km</text></g>`;
+  s+=`<text x="${W-10}" y="${H-10}" font-size="10.5" fill="var(--muted)" text-anchor="end">Schematic map · north up</text></svg>`;
+  return s;
+}
+/* ---------- trip progress (Route -> on the way -> visited) ---------- */
+// Kept per position in the day; a stop keeps its status as long as the same place stays at that position (e.g. after a swap later in the day).
+function tripSync(m){
+  const ids=m.plan.stops.map(s=>s.p.id),old=state.trip,st={};
+  if(old&&old.ids.join()===ids.join())return;
+  if(old)ids.forEach((id,i)=>{if(old.ids[i]===id&&old.st[i])st[i]=old.st[i]});
+  state.trip={ids,st};
+}
+const tripSt=i=>(state.trip&&state.trip.st[i])||"";
+function tripNext(m){for(let i=0;i<m.plan.stops.length;i++)if(tripSt(i)!=="done")return i;return -1}
+function tripGo(i){for(const k in state.trip.st)if(state.trip.st[k]==="go")delete state.trip.st[k];state.trip.st[i]="go"}
+function tripDone(i){state.trip.st[i]="done"}
+const tripCount=()=>state.trip?Object.values(state.trip.st).filter(v=>v==="done").length:0;
+/* ---------- day impact: what the visited stops did for Limburg ---------- */
+const quietVisit=s=>s.p.crowd>=3&&!s.peak; // a popular place visited outside its rush hour
+function tripImpact(m){
+  const b={stops:0,local:0,quiet:0};
+  m.plan.stops.forEach((s,i)=>{if(tripSt(i)==="done"){b.stops++;if(s.p.local)b.local++;if(quietVisit(s))b.quiet++}});
+  b.complete=m.plan.stops.length>0&&b.stops===m.plan.stops.length;return b;
+}
+/*@ENGINE-END@*/
+
+
+/* ---------- what a switch changed ---------- */
+const SWITCH_NAME={crowd:"Plan around crowds",local:"Prefer local businesses"};
+function switchFlip(which,on){const prev=state.cur.plan.stops.map(s=>s.p);state[which]=on;resolve();state.chg={which,on,prev}}
+function switchNote(){
+  const c=state.chg;if(!c)return "";
+  const next=state.cur.plan.stops.map(s=>s.p),nIds=new Set(next.map(p=>p.id)),pIds=new Set(c.prev.map(p=>p.id));
+  const gone=c.prev.filter(p=>!nIds.has(p.id)),added=next.filter(p=>!pIds.has(p.id));
+  if(!gone.length&&!added.length){
+    const why=c.which==="local"
+      ?(c.on?"the day already used the closest local businesses.":"the closest places for this day happen to be local businesses anyway.")
+      :(c.on?"the chosen places were already quiet at these times.":"the chosen places are quiet at these times anyway.");
+    return `Same day – ${why}`;
+  }
+  const st=state.cur.plan.stops;
+  const tag=p=>{const x=st.find(y=>y.p.id===p.id);if(c.which==="local")return p.local?"local":"not local";return x&&x.peak?"at rush hour":"quiet"};
+  const lines=added.map((p,k)=>{const n=st.findIndex(y=>y.p.id===p.id)+1;return `Stop ${n}: <b>${esc(p.name)}</b> · ${tag(p)}`});
+  gone.slice(added.length).forEach(p=>lines.push(`<b>${esc(p.name)}</b> drops out.`));
+  return lines.join("<br>");
+}
+const isChanged=p=>!!(state.chg&&!state.chg.prev.some(x=>x.id===p.id));
+
+
+/* ---------- day complete moment ---------- */
+function celebrate(){
+  const host=document.getElementById("device")||document.body,box=document.createElement("div");box.className="confetti";box.setAttribute("aria-hidden","true");
+  const cols=["linear-gradient(#fff 0 50%,var(--red) 50% 100%)","var(--yellow)","linear-gradient(#fff 0 50%,var(--ok) 50% 100%)"];
+  for(let k=0;k<22;k++){const i=document.createElement("i");i.style.left=(4+Math.random()*92)+"%";i.style.background=cols[k%3];
+    i.style.setProperty("--dur",(1.6+Math.random()*1.1).toFixed(2)+"s");i.style.setProperty("--delay",(Math.random()*.45).toFixed(2)+"s");
+    i.style.setProperty("--dx",Math.round(Math.random()*80-40)+"px");i.style.setProperty("--rot",Math.round(Math.random()*540-270)+"deg");box.appendChild(i)}
+  host.appendChild(box);setTimeout(()=>box.remove(),3400);
+}
+function dayEndCard(m,fresh){
+  const b=tripImpact(m);if(!b.complete)return "";const n=m.plan.stops.length;
+  const tile=(num,label,show)=>show?`<div><b>${num}</b><span>${label}</span></div>`:"";
+  return `<div class="dayend${fresh?" fresh-end":""}" role="status">
+    <div class="de-head"><div class="seal">${ICON.seal}</div><div><h3>Day complete</h3><p>Thanks for taking the detour.</p></div></div>
+    <div class="de-stats">${tile(`${b.stops}/${n}`,"stops visited",1)}${tile(b.local,b.local===1?"local business supported":"local businesses supported",b.local)}${tile(b.quiet,b.quiet===1?"rush hour avoided":"rush hours avoided",b.quiet)}</div>
+    <button type="button" class="alt de-again" data-again>Plan another day</button>
+  </div>`;
+}
+/* ---------- stage 2 ---------- */
+const EX_LABELS=["Rainy day","Food & wine","Quiet nature","With kids","History","Treat yourself"];
+const EXAMPLES=["Rainy Saturday, something cosy and not too expensive for the whole day","I love food and wine, show me the Burgundian side of Limburg","Quiet nature walk away from the crowds, half a day","Fun day with the kids near Kerkrade","First time in Maastricht, I want the history highlights","Treat ourselves for our anniversary, relax and dinner"];
+function ask(text,initial){
+  const {q,src,town}=parse(text);
+  state.cur={text,q,src,town,swaps:{},themeLock:null,isExample:EXAMPLES.includes(text)};state.open=-1;state.slot=0;
+  document.getElementById("askinput").value=initial?"":text; // the page opens on an example, but the box stays free for the visitor
+  document.querySelectorAll(".ex").forEach(b=>b.setAttribute("aria-pressed",String(EXAMPLES[+b.dataset.ex]===text)));
+  renderAll(true);
+}
+function resolve(){const m=state.cur;m.ranking=rankThemes(m.q);m.theme=m.themeLock?THEMES.find(t=>t.id===m.themeLock):m.ranking[0].t;m.plan=plan(m);m.base=buildPlan(m,"top")}
+function renderHeard(){
+  const m=state.cur,ch=chipList(m);
+  document.getElementById("heard").innerHTML=ch.length
+    ?`<span>Understood:</span>`+ch.map(([k,t])=>`<button type="button" class="chip" data-k="${k}" title="From “${esc(m.src[k.split(":")[0]]||"")}”. Click to remove.">${esc(t)}<span class="x" aria-hidden="true">×</span></button>`).join("")
+    :`<span>No wishes recognised. Try a budget, the weather or an interest.</span>`;
+}
+function renderDay(fresh){
+  const m=state.cur,T=totals(m.plan),r1=m.ranking.find(r=>r.t.id===m.theme.id);
+  tripSync(m);const nx=tripNext(m);
+  const stops=m.plan.stops.map((s,i)=>{
+    const ts=tripSt(i);
+    const p=s.p,last=i===m.plan.stops.length-1,rs=reasons(s,m),open=state.open===i;
+    const swapped=m.plan.localSwap&&m.plan.localSwap.i===s.i;
+    const leg=`<li class="stop"><div></div><div class="rail"></div><div class="leg">${s.tr.min} min ${s.tr.mode}${i===0?" from "+esc(baseOf(m))+" centre":""}</div></li>`;
+    return `${leg}<li class="stop${i===0?"":""}${last?" last":""}">
+      <div class="time">${hm(s.start)}<small>${esc(s.slot.l)}</small></div>
+      <div class="rail"><div class="blaze${p.local?" y":""}${ts?" t-"+ts:""}"><span>${i+1}</span></div></div>
+      <div class="card box${p.local?" local":""}${open?" open":""}${isChanged(p)?" chg":""}${ts?" t-"+ts:""}">
+        ${ts==="done"?`<span class="donemark" role="img" aria-label="Visited" title="Visited">${ICON.done}</span>`:`<button type="button" class="swapbtn" data-swap="${s.i}" title="Replace this stop with the next closest place" aria-label="Swap stop ${i+1} for the next closest place"><span class="ic">${ICON.swap}</span>Swap</button>`}
+        <h4>${esc(p.name)}${p.local?`<span class="lpill" title="Small local business">Local</span>`:""}</h4>
+        <div class="sub">${esc(p.town)} · ${esc(p.kind||CATS[p.cat])} · ${hrs(p.dur)}, until ${hm(s.end)} · ${eur(p.price)}</div>
+        <div class="reason"><i class="blazemark ${rs[0][0]}" aria-hidden="true"></i><span>${esc(rs[0][1])}</span></div>
+        <div class="more">
+          <ul class="why">${rs.slice(1).map(([l,t])=>`<li><b class="${l}">${sym[l]}</b><span>${esc(t)}</span></li>`).join("")}</ul>
+          ${swapped?`<p class="note"><span class="mk y"></span> Chosen by the local-business rule instead of ${esc(m.plan.localSwap.out.name)}.</p>`:""}
+          <p class="note">${esc(p.blurb||"")}</p>
+          <p class="tip"><b>Good to know</b> · ${esc(tipFor(p))}</p>
+        </div>
+        
+        
+        <div class="acts">
+          ${ts==="go"?`<button type="button" class="here" data-here="${i}">${ICON.ok} I'm here</button><span class="onway"><span class="pulse" aria-hidden="true"></span>On your way · ${s.tr.min} min</span><a class="again" data-go="${i}" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">Route again</a>`:ts==="done"?"":`<a class="btn route${i===nx?" next":""}${i===0?" first":last?" last":""}" data-go="${i}" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">${ICON.go} ${i===0?"Start · route to stop 1":last?"Finish · route to stop "+(i+1):"Route to stop "+(i+1)}</a>`}
+          <span class="minor"><button type="button" class="lnk" data-open="${i}" aria-expanded="${open}">${open?"Less ▴":"Details ▾"}</button>
+          </span>
+        </div>
+      </div></li>`}).join("");
+  const alts=m.ranking.filter(r=>r.t.id!==m.theme.id).slice(0,2).map(r=>`<button type="button" class="alt pkgalt" data-theme="${r.t.id}">${TICON(r.t.id)}${esc(r.t.name)}${ICON.right}</button>`).join("");
+  const reset=m.themeLock&&m.themeLock!==m.ranking[0].t.id?`<button type="button" class="alt" data-theme="">${ICON.left} Back to best match</button>`:"";
+  document.getElementById("day").innerHTML=`<div class="${fresh?"fresh":""}" style="display:flex;flex-direction:column;gap:14px">
+    <div class="pkg box"><div class="pkg-top"><h3>${TICON(m.theme.id)}${esc(m.theme.name)}</h3><span class="match">${m.isExample?"Example day":"Best match for you"}</span></div><p>${esc(m.theme.d)}</p>
+      <div class="sum"><div><b>${eur(Math.round(T.cost*2)/2)}</b><span>per person</span></div><div><b>${hm(m.plan.start)}–${m.plan.stops.length?hm(m.plan.stops[m.plan.stops.length-1].end):"—"}</b><span>${hrs(T.hours)}</span></div><div><b>${T.km.toFixed(1)} km</b><span>travel</span></div><div><b>${T.local}</b><span>local ${T.local===1?"business":"businesses"}</span></div></div></div>
+    ${dayEndCard(m,state.trip.fresh)}<div class="progress">${tripCount()?`<span><b>Visited ${tripCount()} of ${m.plan.stops.length}</b></span><button type="button" data-trip-reset>Restart</button>`:m.plan.stops.length?`<span>Press <b>Route</b> on a stop to start your day. Confirm when you arrive.</span>`:""}</div>
+    ${emptyNote(m)?`<div class="thin">${emptyNote(m)}</div>`:""}
+    <ol class="stops">${stops}</ol>
+    <div class="alts"><span class="label">Not quite it? Try another package</span><div class="altrow">${reset}${alts}</div></div></div>`;
+}
+function renderMap(){document.getElementById("map").innerHTML=mapSVG(state.cur,480)}
+
+/* ---------- stage 3 ---------- */
+function renderCompare(){
+  const m=state.cur,A=m.plan,B=m.base,all=A.stops.concat(B.stops);
+  if(!A.stops.length||!B.stops.length){document.getElementById("lanes").innerHTML=`<p class="note">Not enough places near ${esc(baseOf(m))} to compare two full days. Start from Maastricht to see the comparison.</p>`;document.getElementById("kpis").innerHTML="";document.getElementById("verdict").innerHTML="";["crowd","local"].forEach(k=>{document.getElementById("eff-"+k).innerHTML=""});return}
+  const t0=Math.floor(Math.min(...all.map(s=>s.start))),t1=Math.ceil(Math.max(...all.map(s=>s.end))),span=t1-t0;
+  const pos=t=>((t-t0)/span*100).toFixed(2)+"%";
+  const ticks=[];for(let h=t0;h<=t1;h++)ticks.push(`<span style="left:${pos(h)}">${String(h).padStart(2,"0")}:00</span>`);
+  const lane=(pl,who,icon)=>`<div class="lane"><div class="who">${icon}${who}</div><div class="track" style="--hour:${(100/span).toFixed(3)}%">${pl.stops.map((s,i)=>{const c=s.peak?"c3":s.crowdNow>=3?"c2":"c1";return `<div class="blk ${c}${s.p.local?" local":""}${pl===A&&isChanged(s.p)?" chg":""}" style="left:${pos(s.start)};width:calc(${((s.end-s.start)/span*100).toFixed(2)}% - 3px)" title="${hm(s.start)}–${hm(s.end)} ${esc(s.p.name)} · ${s.peak?"peak hour":crowdWord(s.crowdNow)}${s.p.local?" · local business":""}"><b>${i+1}</b><span>${esc(s.p.name)}</span><em>${s.peak?"Rush hour":s.crowdNow>=3?"Moderate":"Quiet"}</em></div>`}).join("")}</div></div>`;
+  document.getElementById("lanes").innerHTML=`<div class="axis"><div></div><div class="ticks">${ticks.join("")}</div></div>${lane(A,`<span>Omweg<small>${state.crowd&&state.local?"plans around crowds":!state.crowd&&!state.local?"both ideas off":!state.crowd?"crowd planning off":"local preference off"}</small></span>`,'<span class="mk"></span>')}${lane(B,"<span>Normal app<small>most popular, ignores the time</small></span>",'<span class="sw" style="background:var(--muted)"></span>')}`;
+  const a=totals(A),b=totals(B);
+  // o/bv are compared (shares where the days have a different number of stops); so/sb are what is shown
+  const kpi=(qn,o,bv,better,so,sb)=>{const diff=better==="low"?bv-o:o-bv,cls=Math.abs(diff)<1e-9?"same":diff>0?"good":"bad";return `<div class="kpi box"><span class="q">${qn}</span><div class="vals"><span class="o ${cls}">${so}</span><span class="b">normal app: ${sb}</span></div></div>`};
+  document.getElementById("kpis").innerHTML=
+    kpi("Stops visited at their peak hour",a.peak/A.stops.length,b.peak/B.stops.length,"low",`${a.peak} of ${A.stops.length}`,`${b.peak} of ${B.stops.length}`)+
+    kpi("Small local businesses in the day",a.local/A.stops.length,b.local/B.stops.length,"high",`${a.local} of ${A.stops.length}`,`${b.local} of ${B.stops.length}`)+
+    kpi("Average crowd when you arrive (1–5)",a.crowd,b.crowd,"low",a.crowd.toFixed(1),b.crowd.toFixed(1))+
+    kpi("Distance travelled",a.km,b.km,"low",a.km.toFixed(1)+" km",b.km.toFixed(1)+" km");
+  const rush=x=>x===0?"no rush hours":x===1?"1 rush hour":x+" rush hours",loc=x=>x===1?"1 local business":x+" local businesses";
+  document.getElementById("verdict").innerHTML=`Same request. The normal app sends you into <b class="${b.peak?"bad":""}">${rush(b.peak)}</b> with <b>${loc(b.local)}</b>. Omweg plans <b class="${a.peak<=b.peak?"good":"bad"}">${rush(a.peak)}</b> and <b class="${a.local>=b.local?"good":""}">${loc(a.local)}</b>.`;
+  ["crowd","local"].forEach(k=>{document.getElementById("eff-"+k).innerHTML=state.chg&&state.chg.which===k?switchNote():""});
+}
+
+/* ---------- stage 4 ---------- */
+function renderHow(){
+  const m=state.cur,q=m.q;
+  // A
+  const pairs=chipList(m).map(([k,t])=>{const key=k.split(":")[0];let num;
+    if(key==="budget")num=`budget_eur = ${q.budget}`;else if(key==="hours")num=`hours = ${q.hours}`;else if(key==="start")num=`start = ${hm(q.start)}`;else if(key==="indoor")num=`indoor = ${q.indoor}`;else if(key==="crowd")num=`crowd = ${q.crowd}`;else if(key==="avoid")num=`avoid = ${k.slice(6)}`;else{const f=k.slice(4);num=`${f} = ${q.mix[f].toFixed(2)}`}
+    return `<span class="pair"><i>“${esc(m.src[key]||"")}”</i>${ICON.right}<b>${esc(num)}</b></span>`}).join("");
+  document.getElementById("stepA").innerHTML=`<div class="chat"><span class="chat-who">${m.isExample?"Example message":"You wrote"} · stage 2</span><a class="bubble" href="#s2">${esc(m.text)}</a><a class="tryme tryup" href="#s2"><svg width="30" height="24" viewBox="0 0 30 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M28 21C17 22 8 17 6 4"/><path d="M2 8l4-5 4 5"/></svg>try writing your own in stage 2</a></div><span class="reads">The agent reads it as</span><div class="pairs">${pairs+(m.town?`<span class="pair"><i>“${esc(m.town)}”</i>${ICON.right}<b>start_town = ${esc(m.town)}</b></span>`:"")||'<span class="note">No criteria recognised.</span>'}</div>
+`;
+  // B
+  const maxD=Math.max(...m.ranking.map(r=>r.d),.01),used=Object.keys(m.ranking[0].c).map(k=>k.replace("mix_","")).join(", ");
+  document.getElementById("stepB").innerHTML=`<div class="bars">${m.ranking.map(r=>`<div class="bar${r.t.id===m.theme.id?" pick":""}"><span class="nm">${esc(r.t.name)}</span><span class="tr"><i style="width:${Math.max(2,r.d/maxD*100).toFixed(1)}%;background:${r.t.id===m.theme.id?"var(--red)":"var(--f-dist)"}"></i></span><span class="v">${r.d.toFixed(2)}</span></div>`).join("")}</div>
+    <p class="note">Chosen: <b>${esc(m.theme.name)}</b>, distance ${m.ranking.find(r=>r.t.id===m.theme.id).d.toFixed(2)} (≈ ${fit(m.ranking.find(r=>r.t.id===m.theme.id).d)}% fit).</p>
+    <details><summary>Show the numbers</summary><p class="note">Compared on: ${esc(used||"nothing, no wishes recognised")}. Every value is a z-score (distance from the average package in standard deviations). Distance metric: <span class="seg" role="group" aria-label="Distance metric"><button type="button" data-metric="euclid" aria-pressed="${state.metric==="euclid"}">Euclidean</button><button type="button" data-metric="manhattan" aria-pressed="${state.metric==="manhattan"}">Manhattan</button></span></p>
+    <div class="tw"><table><thead><tr><th>Package</th><th class="n">Cost</th><th class="n">Hours</th><th class="n">Indoor</th><th class="n">Crowd</th><th class="n">Distance</th></tr></thead><tbody>${m.ranking.map(r=>`<tr class="${r.t.id===m.theme.id?"pick":""}"><td>${esc(r.t.name)}</td><td class="n">€${r.t.v.price}</td><td class="n">${r.t.v.hours}</td><td class="n">${r.t.v.indoor}</td><td class="n">${r.t.v.crowd}</td><td class="n">${r.d.toFixed(2)}</td></tr>`).join("")}</tbody></table></div></details>`;
+  // C
+  const st=m.plan.stops;if(state.slot>=st.length)state.slot=0;const s=st[state.slot];
+  if(!s){document.getElementById("stepC").innerHTML="";return}
+  const keys=["price","indoor","crowd","pop","dist","kind","local","interest","avoid"].filter(k=>s.ranked.some(r=>r.c&&k in r.c));
+  const rows=s.ranked.slice(0,6);if(!rows.some(r=>r.p.id===s.p.id))rows.push(s.ranked.find(r=>r.p.id===s.p.id));
+  const maxS=Math.max(...rows.map(r=>Object.values(r.c).reduce((a,x)=>a+Math.abs(x),0)),.01);
+  document.getElementById("stepC").innerHTML=`<div class="stopsel">${st.map((x,i)=>`<button type="button" data-slot="${i}" aria-pressed="${i===state.slot}"><span class="mk${x.p.local?" y":""}"></span>Stop ${i+1} · ${esc(x.slot.l)}</button>`).join("")}</div>
+    <div class="legend">${keys.map(k=>`<span><span class="sw" style="background:var(${FCOL[k]})"></span>${FLAB[k]}</span>`).join("")}</div>
+    <div class="bars">${rows.map(r=>`<div class="bar${r.p.id===s.p.id?" pick":""}"><span class="nm">${esc(r.p.name)}${r.p.local?' <span class="mk y"></span>':""}</span><span class="tr">${keys.map(k=>{const v=Math.abs(r.c[k]||0);return v?`<i style="width:${(v/maxS*100).toFixed(1)}%;background:var(${FCOL[k]})" title="${FLAB[k]}: ${v.toFixed(2)}"></i>`:""}).join("")}</span><span class="v">${r.d.toFixed(2)}</span></div>`).join("")}</div>
+    <p class="note">Shorter bar = closer to the ideal stop.${s.closed.length?` Left out because they're closed at ${hm(s.arrive)}: ${s.closed.slice(0,5).map(r=>esc(r.p.name)).join(", ")}${s.closed.length>5?` and ${s.closed.length-5} more`:""}.`:""}</p>
+    <details><summary>Show the numbers</summary><div class="tw"><table><thead><tr><th>Place</th><th class="n">Price</th><th class="n">Arrive</th><th class="n">Crowd then</th><th class="n">Km</th>${keys.map(k=>`<th class="n">${k}</th>`).join("")}<th class="n">d</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.p.id===s.p.id?"pick":""}"><td>${esc(r.p.name)}</td><td class="n">${eur(r.p.price)}</td><td class="n">${hm(r.start)}</td><td class="n">${r.crowdNow}${r.peak?" peak":""}</td><td class="n">${r.km.toFixed(1)}</td>${keys.map(k=>`<td class="n">${r.c[k]!=null?r.c[k].toFixed(2):"–"}</td>`).join("")}<td class="n">${r.d.toFixed(2)}</td></tr>`).join("")}</tbody></table></div></details>`;
+}
+
+/* ---------- glue ---------- */
+function renderAll(fresh,keep){if(!keep)state.chg=null;resolve();renderHeard();renderDay(fresh);renderMap();renderCompare();renderHow()}
+document.getElementById("examples").insertAdjacentHTML("beforeend",EXAMPLES.map((t,i)=>`<button type="button" class="ex" data-ex="${i}" aria-pressed="false" title="${esc(t)}">${esc(EX_LABELS[i])}</button>`).join(""));
+document.getElementById("base").innerHTML=Object.keys(TOWNS).map(t=>`<option${t===state.base?" selected":""}>${t}</option>`).join("");
+const nConf=P.filter(p=>p.conf==="CONFIRMED").length;
+document.querySelectorAll(".ds-n").forEach(e=>{e.textContent=P.length});
+document.getElementById("dsnote").textContent=`The database holds ${P.length} real places, ${P.filter(p=>p.local).length} of them small local businesses. Prices and opening hours are checked for ${nConf}; the rest are estimates from 2026 sources.`;
+document.getElementById("askform").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("askinput").value.trim();if(v)ask(v)});
+document.getElementById("examples").addEventListener("click",e=>{const b=e.target.closest(".ex");if(b)ask(EXAMPLES[+b.dataset.ex])});
+document.getElementById("heard").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;const m=state.cur,k=c.dataset.k;
+  if(k.startsWith("avoid:")){m.q.avoid=m.q.avoid.filter(x=>x!==k.slice(6));if(!m.q.avoid.length)delete m.q.avoid}
+  else if(k.startsWith("mix:")){delete m.q.mix[k.slice(4)];const tot=Object.values(m.q.mix).reduce((a,b)=>a+b,0);if(tot>0){for(const x in m.q.mix)m.q.mix[x]/=tot}else delete m.q.mix}else delete m.q[k];
+  m.swaps={};m.themeLock=null;renderAll(true)});
+
+/* ---------- re-render without moving the page ---------- */
+// The day list is rebuilt on every click; on phones the page briefly gets shorter and jumps to the top.
+// Lock the list's height during the rebuild and put every scroll position back where it was.
+function stay(fn){
+  const d=document.getElementById("day"),inner=document.getElementById("main"),y=window.scrollY,yi=inner?inner.scrollTop:0;
+  if(d)d.style.minHeight=d.offsetHeight+"px";
+  fn();
+  if(inner)inner.scrollTop=yi;
+  window.scrollTo(0,y);
+  requestAnimationFrame(()=>{if(d)d.style.minHeight=""});
+}
+document.getElementById("day").addEventListener("click",e=>{
+  if(e.target.closest("[data-again]")){const inp=document.getElementById("askinput");inp.scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>inp.focus({preventScroll:true}),400);return}
+  const bb=e.target.closest("[data-base]");if(bb){state.base=bb.dataset.base;document.getElementById("base").value=state.base;state.cur.swaps={};renderAll(true);return}
+  const go=e.target.closest("[data-go]");if(go){const i=+go.dataset.go;setTimeout(()=>stay(()=>{tripGo(i);renderDay(false);renderMap()}),0);return}
+  const here=e.target.closest("[data-here]");if(here){let ended=false;stay(()=>{tripDone(+here.dataset.here);const pt=tripImpact(state.cur);if(pt.complete&&!state.trip.celebrated){state.trip.celebrated=true;state.trip.fresh=true;renderDay(false);renderMap();state.trip.fresh=false;celebrate();ended=true}else{renderDay(false);renderMap()}});if(ended)setTimeout(()=>{const de=document.querySelector(".dayend");if(de)de.scrollIntoView({behavior:"smooth",block:"center"})},60);return}
+  if(e.target.closest("[data-trip-reset]")){state.trip.st={};state.trip.celebrated=false;stay(()=>{renderDay(false);renderMap()});return}
+  const o=e.target.closest("[data-open]");if(o){const i=+o.dataset.open;state.open=state.open===i?-1:i;stay(()=>renderDay(false));return}
+  const sw=e.target.closest("[data-swap]");if(sw){const m=state.cur,si=+sw.dataset.swap,s=m.plan.stops.find(x=>x.i===si);if(!s)return;
+    const cur=s.ranked.findIndex(r=>r.p.id===s.p.id);const nxt=s.ranked.slice(cur+1).find(r=>!m.plan.stops.some(x=>x.p.id===r.p.id))||s.ranked.find(r=>!m.plan.stops.some(x=>x.p.id===r.p.id));
+    if(nxt){m.swaps[si]=nxt.p.id;Object.keys(m.swaps).forEach(k=>{if(+k>si)delete m.swaps[k]})}state.open=m.plan.stops.indexOf(s);stay(()=>renderAll(false));return}
+  const th=e.target.closest("[data-theme]");if(th){const m=state.cur;m.themeLock=th.dataset.theme||null;m.swaps={};state.open=-1;state.slot=0;renderAll(true)}
+});
+document.getElementById("stepC").addEventListener("click",e=>{const b=e.target.closest("[data-slot]");if(b){state.slot=+b.dataset.slot;renderHow()}});
+document.getElementById("s4").addEventListener("click",e=>{const b=e.target.closest("[data-metric]");if(b){state.metric=b.dataset.metric;renderAll(false);const d=document.querySelector("#stepB details");if(d)d.open=true}});
+document.getElementById("base").addEventListener("change",e=>{state.base=e.target.value;state.cur.swaps={};renderAll(true)});
+document.getElementById("crowd").addEventListener("change",e=>{stay(()=>{switchFlip("crowd",e.target.checked);renderAll(false,true)})});
+document.getElementById("local").addEventListener("change",e=>{stay(()=>{switchFlip("local",e.target.checked);renderAll(false,true)})});
+ask(EXAMPLES[0],true);
+})();
+</script>
+
+</body>
+</html>
