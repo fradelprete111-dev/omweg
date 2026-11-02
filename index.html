@@ -284,7 +284,17 @@ tr.pick td{background:var(--ground);font-weight:600}
 .lim .label{color:var(--red)}.lim p{margin:0}
 .lim .next{margin-top:4px;padding-top:8px;border-top:1px dashed var(--hair);font-size:14px;color:var(--muted)}
 .lim .next b{display:block;font:800 12px/1.2 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
-.lim-ai{grid-column:auto;grid-row:auto;transform:rotate(-1.2deg)}.lim-ai .next{border-top-color:rgba(0,0,0,.3);color:#141614}.lim-ai .next b{color:#141614}
+.lim-ai{grid-column:auto;grid-row:auto;transform:rotate(1.8deg);margin-top:10px}
+.limwrap{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:26px;align-items:start}
+.limtab{padding:4px 22px}
+.limhead,.limrow{display:grid;grid-template-columns:92px minmax(0,1.15fr) minmax(0,1fr);gap:20px}
+.limhead{padding:12px 0 9px;border-bottom:1px solid var(--hair)}.limhead .label{color:var(--muted)}
+.limrow{padding:15px 0;border-bottom:1px dashed var(--hair);font-size:15px;line-height:1.5}.limrow:last-child{border-bottom:0}
+.limrow .lk{font:800 15px/1.5 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+.limrow .now{color:var(--muted)}.limrow .now p{margin:0 0 6px}.limrow .now p:last-child{margin:0}
+.limrow .nx{position:relative;padding-left:28px;color:var(--ink)}
+.limrow .nx::before{content:"";position:absolute;left:0;top:5px;width:18px;height:12px;background:var(--yellow);clip-path:polygon(0 35%,55% 35%,55% 0,100% 50%,55% 100%,55% 65%,0 65%)}
+@media (max-width:760px){.limwrap{grid-template-columns:minmax(0,1fr)}.limhead{display:none}.limrow{grid-template-columns:minmax(0,1fr);gap:6px}.lim-ai{transform:rotate(-1deg);margin:0 6px}}.lim-ai .next{border-top-color:rgba(0,0,0,.3);color:#141614}.lim-ai .next b{color:#141614}
 .go-s{font:800 17px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--red);color:var(--red-ink);padding:9px 30px 9px 12px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%);white-space:nowrap}
 .yourturn{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
 .yourturn label{font:800 15px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
@@ -531,10 +541,14 @@ tr.pick td{background:var(--ground);font-weight:600}
       <div class="post"><span class="n">Stage 5</span></div>
       <h2>What this prototype does not do yet</h2>
     </div>
-    <div class="lim3">
-      <div class="lim box"><span class="label">Data</span><p id="dsnote"></p><p>Crowd levels and peak hours are our estimates.</p><p class="next"><b>Next step</b> Real visitor data: ticket sales, municipal counts or the app's own use.</p></div>
+    <div class="limwrap">
+      <div class="limtab box">
+        <div class="limhead"><span></span><span class="label">Today</span><span class="label">Next step</span></div>
+        <div class="limrow"><span class="lk">Data</span><div class="now"><p id="dsnote"></p><p>Crowd levels and peak hours are our estimates.</p></div><div class="nx">Real visitor data: ticket sales, municipal counts or the app's own use.</div></div>
+        <div class="limrow"><span class="lk">Scope</span><div class="now"><p>You choose the start town by hand instead of using GPS. Routes open in Google Maps.</p></div><div class="nx">GPS start and live routing inside the app.</div></div>
+        <div class="limrow"><span class="lk">Evidence</span><div class="now"><p>No test with real users yet: the results in stage 3 come from the prototype itself.</p></div><div class="nx">A test with 5–10 users: usability score (SUS) and how often they swap a stop.</div></div>
+      </div>
       <div class="lim postit lim-ai"><b>About the AI · 3/3</b><span>The language model is simulated by simple rules, so unusual sentences may be misread.</span><span class="next"><b>Next step</b> Plug in an LLM. Only step A changes; the k-NN planner stays the same.</span></div>
-      <div class="lim box"><span class="label">Scope</span><p>You choose the start town by hand instead of using GPS.</p><p>Routes open in Google Maps.</p><p class="next"><b>Next step</b> GPS start and live routing inside the app.</p></div>
     </div>
     <span class="label">In the report</span>
     <div class="grid3">
